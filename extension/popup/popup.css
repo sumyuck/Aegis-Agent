@@ -6,7 +6,7 @@
 }
 * { box-sizing:border-box; }
 body {
-  width:560px; margin:0; background:var(--bg); color:var(--fg);
+  width:600px; margin:0; background:var(--bg); color:var(--fg);
   font:13px/1.45 -apple-system, "Segoe UI", Roboto, sans-serif;
 }
 header { display:flex; align-items:center; justify-content:space-between;
@@ -79,6 +79,17 @@ th { text-align:left; font-size:9.5px; text-transform:uppercase; letter-spacing:
   color:var(--muted); border-bottom:1px solid var(--line); padding:5px 4px; font-weight:500; }
 td { padding:5px 4px; border-bottom:1px solid #1a2030; vertical-align:top; font-family:var(--mono); }
 td.tok { color:var(--accent); white-space:nowrap; }
+/* The proof column is the most important evidence in the popup, so it must never
+   be the one that gets clipped: keep the geometry compact and let it wrap first. */
+td.box { white-space:nowrap; color:var(--dim); font-size:10px; }
+td.box .at { color:var(--muted); margin-left:4px; }
+td .ok { color:var(--ok); white-space:nowrap; }
+td .bad { color:var(--bad); white-space:nowrap; }
+#maskTable { table-layout:fixed; }
+#maskTable th:nth-child(1), #maskTable td:nth-child(1) { width:30%; }
+#maskTable th:nth-child(2), #maskTable td:nth-child(2) { width:14%; }
+#maskTable th:nth-child(4), #maskTable td:nth-child(4) { width:18%; }
+#maskTable th:nth-child(5), #maskTable td:nth-child(5) { width:14%; }
 .sev3 td.tok { color:#ff8b84; }
 td .lens { font-size:9px; padding:1px 5px; border-radius:9px; border:1px solid var(--line); color:var(--dim); }
 .lensGpu { color:#c08bff !important; border-color:#3d2d5a !important; }

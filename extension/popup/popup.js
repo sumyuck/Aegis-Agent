@@ -4,6 +4,14 @@
 const $ = (id) => document.getElementById(id);
 const send = (msg) => chrome.runtime.sendMessage(msg);
 
+const LENS_ORDER = ['dom-field', 'dom-text', 'gpu-visual'];
+const LENS_LABEL = {
+  'dom-field': 'Lens A · field attributes',
+  'dom-text': 'Lens A · rendered text',
+  'gpu-visual': 'Lens B · WebGPU pixels'
+};
+const LENS_SHORT = { 'dom-field': 'A·field', 'dom-text': 'A·text', 'gpu-visual': 'B·gpu' };
+
 const SETTING_IDS = ['serverUrl', 'mode', 'useGpu', 'strictCapture', 'wantTileMap', 'threshold', 'tile', 'quality', 'maxSteps'];
 let current = null;
 
@@ -67,9 +75,13 @@ function renderMasks(regions) {
     $('maskSummary').textContent = 'Nothing redacted in the last frame.';
     return;
   }
-  const byLens = regions.reduce((a, r) => { a[r.source] = (a[r.source] || 0) + 1; return a; }, {});
-  $('maskSummary').innerHTML = Object.entries(byLens)
-    .map(([k, n]) => `<b>${n}</b> from ${k === 'gpu-visual' ? 'Lens B (WebGPU pixels)' : 'Lens A (DOM)'}`)
+  // Summarise in a fixed order with distinct labels. Both DOM sources used to
+  // render as "Lens A (DOM)", which read as a duplicated row rather than as the
+  // two different detection paths they actually are.
+  const counts = regions.reduce((a, r) => { a[r.source] = (a[r.source] || 0) + 1; return a; }, {});
+  $('maskSummary').innerHTML = LENS_ORDER
+    .filter((k) => counts[k])
+    .map((k) => `<b>${counts[k]}</b> ${LENS_LABEL[k]}`)
     .join(' &nbsp;·&nbsp; ');
 
   const proofs = (current && current.verification && current.verification.proofs) || [];
@@ -77,12 +89,15 @@ function renderMasks(regions) {
     const tr = document.createElement('tr');
     if (r.severity >= 3) tr.className = 'sev3';
     const p = proofs[i];
+    const proof = !p ? '—'
+      : p.uniform ? `<span class="ok" title="${p.pixels} px overwritten, ${p.distinctColours} distinct colour">✓ 0 bits</span>`
+      : `<span class="bad" title="${p.deviantPixels} pixels differ from the mask fill">✗ ${p.deviantPixels}</span>`;
     tr.innerHTML =
       `<td class="tok">${r.token}</td>` +
-      `<td><span class="lens${r.source === 'gpu-visual' ? ' lensGpu' : ''}">${r.source}</span></td>` +
+      `<td><span class="lens${r.source === 'gpu-visual' ? ' lensGpu' : ''}">${LENS_SHORT[r.source] || r.source}</span></td>` +
       `<td>${r.label}</td>` +
-      `<td>${r.box.x},${r.box.y} ${r.box.w}×${r.box.h}</td>` +
-      `<td>${p ? (p.uniform ? `✓ ${p.pixels}px / 0 bits` : `✗ ${p.deviantPixels} deviant`) : '—'}</td>`;
+      `<td class="box">${r.box.w}×${r.box.h}<span class="at">@${r.box.x},${r.box.y}</span></td>` +
+      `<td>${proof}</td>`;
     tb.appendChild(tr);
   });
 }
