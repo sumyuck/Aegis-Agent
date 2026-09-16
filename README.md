@@ -30,6 +30,19 @@ that can **reason** runs on a server and never receives an unredacted pixel.
 This repository is a working implementation, not a mock-up. Every number below was
 measured on the code in it.
 
+<p align="center">
+  <img src="docs/images/evidence-verdict.png"
+       alt="The Aegis-Agent popup: every redacted region verified pixel-uniform, beside the sanitised frame a server would receive">
+</p>
+
+<p align="center">
+  <sub>
+    The operator console after one capture. The verdict bar is not a status message &mdash;
+    it is the result of reading every masked region back off the canvas and asserting
+    it is a single colour.
+  </sub>
+</p>
+
 ## Quick start
 
 ```bash
@@ -126,6 +139,20 @@ Masking runs in two stages, in this order for a reason:
 
 Verifying between the stages is the whole trick. Annotating first would make the
 uniformity test meaningless.
+<p align="center">
+  <img src="docs/images/masks-proofs.png"
+       alt="Per-region mask table showing token, detecting lens, original field type, geometry and uniformity proof">
+</p>
+
+<p align="center">
+  <sub>
+    Every mask, with the lens that caught it and its own proof. <code>A&middot;field</code>
+    and <code>A&middot;text</code> are the two Lens&nbsp;A paths &mdash; attribute
+    classification and rendered-text scanning; <code>B&middot;gpu</code> is the
+    WebGPU pass finding what the DOM never exposed.
+  </sub>
+</p>
+
 
 ### Three structural guarantees
 
@@ -161,6 +188,25 @@ Intel gen-9 **integrated** GPU, 900×560 frame, warm. Re-run
 - Cold first run is ~315 ms (WGSL pipeline creation). Press the button twice before
   you present.
 
+<p align="center">
+  <img src="docs/images/selftest-assertions.png"
+       alt="Self-test harness: eight assertions passed, synthetic frame beside the GPU heatmap and the sanitised output">
+</p>
+
+<p align="center">
+  <sub>
+    <code>tools/selftest.html</code> on the live deployment. Left: the synthetic frame.
+    Middle: the per-tile textness scores the compute shader produced &mdash; the
+    photographic gradient and the logo stay dark while every line of type lights up.
+    Right: what a server would receive.
+    <br><br>
+    This is a <b>cold first run</b> &mdash; the 153.9&nbsp;ms GPU figure is almost all
+    WGSL pipeline creation and the first GPU submit. Press the button a second time and
+    the same frame costs <b>7.1&nbsp;ms</b> on the GPU pass and <b>68.7&nbsp;ms</b> end
+    to end, which is the figure quoted in the table above.
+  </sub>
+</p>
+
 Full breakdown, detection results per planted secret, and false-positive behaviour:
 [`docs/MEASUREMENTS.md`](docs/MEASUREMENTS.md).
 
@@ -181,6 +227,19 @@ manifest of which detector is supposed to catch each one.
 
 Switch the extension to **DOM only** mode and watch the last three rows leak; switch
 back to **Balanced** and watch the GPU pass close them. That contrast is the pitch.
+<p align="center">
+  <img src="docs/images/settings-modes.png"
+       alt="Extension settings: perception mode, WebGPU toggle, strict capture and Lens B sensitivity">
+</p>
+
+<p align="center">
+  <sub>
+    The three perception modes, the WebGPU/CPU switch, and the Lens&nbsp;B sensitivity
+    slider. <b>Strict capture</b> routes the frame through <code>tabCapture</code> so the
+    service worker never holds raw pixels at all.
+  </sub>
+</p>
+
 
 ## Swapping in a real VLM
 
