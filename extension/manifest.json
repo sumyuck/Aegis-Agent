@@ -1,0 +1,50 @@
+{
+  "manifest_version": 3,
+  "name": "Aegis-Agent \u2014 On-Device Visual Perception",
+  "version": "0.9.0",
+  "description": "Zero-trust browser agent: WebGPU on-device screen perception, irreversible PII redaction, privacy-preserving remote reasoning.",
+  "minimum_chrome_version": "116",
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "scripting",
+    "offscreen",
+    "storage",
+    "tabCapture"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background/service-worker.js"
+  },
+  "action": {
+    "default_title": "Aegis-Agent",
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "<all_urls>"
+      ],
+      "all_frames": true,
+      "match_about_blank": true,
+      "js": [
+        "lib/pii-patterns.js",
+        "content/perception.js",
+        "content/actuator.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

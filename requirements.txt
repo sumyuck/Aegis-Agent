@@ -1,0 +1,3 @@
+# Vercel and most PaaS builders look for a requirements.txt at the repo root.
+# The real list lives in server/requirements.txt.
+-r server/requirements.txt

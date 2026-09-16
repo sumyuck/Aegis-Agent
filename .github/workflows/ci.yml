@@ -1,0 +1,56 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with: { node-version: "20" }
+      - name: Extension — classic scripts
+        run: |
+          for f in extension/lib/pii-patterns.js \
+                   extension/content/perception.js \
+                   extension/content/actuator.js \
+                   extension/background/service-worker.js \
+                   extension/popup/popup.js; do
+            node --check "$f" && echo "ok  $f"
+          done
+      - name: Extension — ES modules
+        run: |
+          mkdir -p /tmp/esm
+          for f in extension/offscreen/*.js; do
+            cp "$f" /tmp/esm/check.mjs
+            node --check /tmp/esm/check.mjs && echo "ok  $f"
+          done
+      - name: Manifest references resolve
+        run: |
+          python3 - <<'PY'
+          import json, os, sys
+          m = json.load(open("extension/manifest.json"))
+          refs = [m["background"]["service_worker"], m["action"]["default_popup"],
+                  "offscreen/offscreen.html"]
+          refs += list(m["icons"].values())
+          for cs in m["content_scripts"]:
+              refs += cs["js"]
+          missing = [r for r in dict.fromkeys(refs)
+                     if not os.path.isfile(os.path.join("extension", r))]
+          print("missing:", missing or "none")
+          sys.exit(1 if missing else 0)
+          PY
+
+      - name: Lens A — pattern registry tests
+        run: node --test tests/
+
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - name: Server — install
+        run: pip install -r server/requirements.txt pytest
+      - name: Planner + policy tests
+        run: python -m pytest tests -q

@@ -1,0 +1,288 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bharat Mission Ops — Aegis-Agent demo target</title>
+<style>
+  :root {
+    --bg:#0d1017; --panel:#141924; --panel2:#1a2130; --line:#26303f;
+    --fg:#e3eaf5; --dim:#93a3bb; --muted:#697a94;
+    --accent:#4d8dff; --ok:#33c98a; --warn:#f0b429; --bad:#ff6b60;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--fg);
+         font:14px/1.5 -apple-system,"Segoe UI",Roboto,sans-serif; }
+  header { display:flex; align-items:center; justify-content:space-between;
+           padding:12px 22px; background:linear-gradient(180deg,#171e2b,#111621);
+           border-bottom:1px solid var(--line); }
+  .logo { display:flex; align-items:center; gap:11px; font-weight:650; letter-spacing:.3px; }
+  .logo span.mark { color:var(--accent); font-size:20px; }
+  .who { font-size:12px; color:var(--dim); text-align:right; }
+  nav { display:flex; gap:4px; padding:0 22px; background:#111621; border-bottom:1px solid var(--line); }
+  nav a { padding:10px 16px; color:var(--muted); text-decoration:none; font-size:13px;
+          border-bottom:2px solid transparent; }
+  nav a:hover { color:var(--fg); }
+  nav a.active { color:var(--fg); border-bottom-color:var(--accent); }
+  main { padding:20px 22px 40px; max-width:1180px; }
+  h2 { font-size:15px; margin:0 0 10px; letter-spacing:.2px; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .card { background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; }
+  .card h2 { display:flex; align-items:center; justify-content:space-between; }
+  .tag { font:10px ui-monospace,monospace; padding:2px 7px; border-radius:20px;
+         border:1px solid var(--line); background:var(--panel2); color:var(--dim); }
+  .tag.a { color:#8fbaff; border-color:#2c4570; }
+  .tag.b { color:#c08bff; border-color:#43305e; }
+  dl { display:grid; grid-template-columns:150px 1fr; gap:7px 12px; margin:0; font-size:13px; }
+  dt { color:var(--muted); }
+  dd { margin:0; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
+  label { display:block; font-size:12px; color:var(--dim); margin-bottom:11px; }
+  input, select { width:100%; margin-top:4px; padding:8px 10px; border-radius:7px;
+                  border:1px solid var(--line); background:#0f131b; color:var(--fg); font-size:13px; }
+  input:focus { outline:none; border-color:var(--accent); }
+  .row2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  button { font:inherit; font-size:13px; padding:9px 15px; border-radius:7px; cursor:pointer;
+           background:linear-gradient(180deg,#3d7ffb,#2f68d8); border:1px solid #2f68d8;
+           color:#fff; font-weight:600; }
+  button.sec { background:var(--panel2); border-color:var(--line); color:var(--fg); font-weight:500; }
+  canvas { border:1px solid var(--line); border-radius:8px; display:block; background:#0f131b; }
+  iframe { width:100%; border:1px solid var(--line); border-radius:8px; background:#0f131b; }
+  .note { font-size:11.5px; color:var(--muted); margin-top:8px; }
+  .manifest { margin-top:16px; }
+  .manifest table { width:100%; border-collapse:collapse; font-size:12px; }
+  .manifest th { text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.5px;
+                 color:var(--muted); border-bottom:1px solid var(--line); padding:6px 6px; font-weight:500; }
+  .manifest td { padding:6px; border-bottom:1px solid #1b2230; font-family:ui-monospace,monospace; }
+  .lensA { color:#8fbaff; } .lensB { color:#c08bff; }
+  #banner { background:#1b1408; border:1px solid #4a3a12; color:#f0d9a2; font-size:12px;
+            padding:9px 14px; margin:0 22px 16px; border-radius:8px; }
+  .status { display:flex; gap:18px; font-size:12px; color:var(--dim); margin-top:10px; }
+  .dot { width:7px; height:7px; border-radius:50%; background:var(--ok); display:inline-block; margin-right:5px; }
+</style>
+<body>
+
+<header>
+  <div class="logo"><span class="mark">◈</span> BHARAT MISSION OPS <span class="tag">SIM · NOT REAL DATA</span></div>
+  <div class="who">
+    Operator: A. Verma · Clearance L3<br>
+    <span style="color:#697a94">session</span>
+    <code style="font-size:11px">eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvcHMtNDIiLCJjbCI6M30.q7Zx1KpLm9AeVv3TdRb8Nw</code>
+  </div>
+</header>
+
+<nav>
+  <a href="#dashboard" class="active" data-view="dashboard">Dashboard</a>
+  <a href="#payments"  data-view="payments">Payments</a>
+  <a href="#records"   data-view="records">Personnel Records</a>
+  <a href="#telemetry" data-view="telemetry">Telemetry</a>
+</nav>
+
+<div id="banner">
+  Synthetic demo target. Every identifier below is fabricated and checksum-valid only
+  so the detectors have something real to find. Four blind-spot classes are planted
+  on purpose — see the manifest at the bottom of the page.
+</div>
+
+<main>
+  <div class="grid">
+
+    <!-- ---------------------------------------------- Lens A: DOM text -->
+    <section class="card">
+      <h2>Operator identity <span class="tag a">Lens A · DOM text</span></h2>
+      <dl>
+        <dt>Full name</dt><dd>Ananya Verma</dd>
+        <dt>Aadhaar</dt><dd>3527 4183 9170</dd>
+        <dt>PAN</dt><dd>BQXPV4417K</dd>
+        <dt>Official email</dt><dd>a.verma@ops.example.in</dd>
+        <dt>Mobile</dt><dd>+91 9845512207</dd>
+        <dt>Date of birth</dt><dd>14/03/1994</dd>
+        <dt>Passport</dt><dd>M4471829</dd>
+        <dt>Payroll UPI</dt><dd>averma.ops@okhdfcbank</dd>
+      </dl>
+      <div class="status"><span><span class="dot"></span>verified</span><span>last sync 4 min ago</span></div>
+    </section>
+
+    <!-- ---------------------------------------------- Lens A: form fields -->
+    <section class="card">
+      <h2>Re-authenticate <span class="tag a">Lens A · field attributes</span></h2>
+      <label>Operator ID
+        <input type="text" name="operator" value="OPS-4417" autocomplete="username">
+      </label>
+      <label>Password
+        <input type="password" name="password" autocomplete="current-password" value="correct-horse-battery">
+      </label>
+      <div class="row2">
+        <label>One-time code
+          <input type="text" name="otp" autocomplete="one-time-code" inputmode="numeric" value="884213">
+        </label>
+        <label>Aadhaar (last re-verify)
+          <input type="text" name="aadhaarNumber" value="4291 8836 5210">
+        </label>
+      </div>
+      <label>Search facility
+        <input type="text" name="q" placeholder="search facility or bay" aria-label="Search facility">
+      </label>
+      <div style="display:flex; gap:8px; margin-top:4px">
+        <button id="authBtn">Authenticate</button>
+        <button class="sec" id="newTransfer">New transfer</button>
+        <button class="sec" id="exportBtn">Export manifest</button>
+      </div>
+      <div class="note" id="actionLog">no agent action yet</div>
+    </section>
+
+    <!-- ---------------------------------------------- Lens B: canvas -->
+    <section class="card">
+      <h2>Launch clearance chit <span class="tag b">Lens B · canvas pixels</span></h2>
+      <canvas id="chit" width="520" height="190"></canvas>
+      <div class="note">
+        Drawn with <code>fillText()</code>. There is no text node, no
+        <code>alt</code>, no accessible name — <code>document.body.innerText</code>
+        returns nothing from this box. Only a pixel-level pass can see it.
+      </div>
+    </section>
+
+    <!-- ---------------------------------------------- Lens B: baked image -->
+    <section class="card">
+      <h2>Scanned annexure <span class="tag b">Lens B · rasterised image</span></h2>
+      <img id="annexure" width="520" height="190" alt="scanned annexure page"
+           style="border:1px solid #26303f;border-radius:8px;display:block">
+      <div class="note">
+        An <code>&lt;img&gt;</code> whose glyphs were rasterised before they reached
+        the page. Identical to a PDF page, a screenshot pasted into a ticket, or a
+        WebGL-rendered dashboard.
+      </div>
+    </section>
+
+    <!-- ---------------------------------------------- Lens A: nested frame -->
+    <section class="card">
+      <h2>Payment instrument <span class="tag a">Lens A · nested frame</span></h2>
+      <iframe id="payFrame" src="frame-payment.html" height="250" title="payment instrument"></iframe>
+      <div class="note">
+        Separate browsing context. Its content script reports boxes in <em>its own</em>
+        viewport; the parent pushes down the frame offset so the coordinates land
+        correctly on the top-level screenshot.
+      </div>
+    </section>
+
+    <!-- ---------------------------------------------- Lens B: sandboxed frame -->
+    <section class="card">
+      <h2>Third-party widget <span class="tag b">Lens B · scriptless sandbox</span></h2>
+      <iframe id="sandboxFrame" height="250" sandbox title="third-party widget"></iframe>
+      <div class="note">
+        <code>sandbox</code> with no <code>allow-scripts</code>: no content script can
+        run inside, so Lens A is blind here by construction. The GPU pass still sees
+        the pixels.
+      </div>
+    </section>
+  </div>
+
+  <!-- ------------------------------------------------------------ manifest -->
+  <section class="card manifest">
+    <h2>Planted-secret manifest — what a correct run must redact</h2>
+    <table>
+      <thead><tr><th>#</th><th>Secret</th><th>Where it lives</th><th>Caught by</th><th>Expected token</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Session JWT</td><td>header, DOM text</td><td class="lensA">Lens A</td><td>[MASK_TOKEN]</td></tr>
+        <tr><td>2</td><td>Aadhaar (Verhoeff-valid)</td><td>identity card, DOM text</td><td class="lensA">Lens A</td><td>[MASK_AADHAAR]</td></tr>
+        <tr><td>3</td><td>PAN · passport · DOB · UPI</td><td>identity card, DOM text</td><td class="lensA">Lens A</td><td>[MASK_PAN] …</td></tr>
+        <tr><td>4</td><td>Email · mobile</td><td>identity card, DOM text</td><td class="lensA">Lens A</td><td>[MASK_EMAIL] [MASK_PHONE]</td></tr>
+        <tr><td>5</td><td>Password · OTP fields</td><td>auth form, field attributes</td><td class="lensA">Lens A</td><td>[MASK_PASSWORD] [MASK_OTP]</td></tr>
+        <tr><td>6</td><td>Card number · CVC</td><td>nested iframe</td><td class="lensA">Lens A</td><td>[MASK_CARD] [MASK_CVC]</td></tr>
+        <tr><td>7</td><td>Aadhaar + launch coordinates</td><td><code>&lt;canvas&gt;</code> pixels</td><td class="lensB">Lens B</td><td>[MASK_PII]</td></tr>
+        <tr><td>8</td><td>Scanned annexure text</td><td>rasterised <code>&lt;img&gt;</code></td><td class="lensB">Lens B</td><td>[MASK_PII]</td></tr>
+        <tr><td>9</td><td>Beneficiary + account</td><td>scriptless sandboxed iframe</td><td class="lensB">Lens B</td><td>[MASK_PII]</td></tr>
+      </tbody>
+    </table>
+    <div class="note">
+      Switch the extension to <b>DOM only</b> mode to watch rows 7–9 leak, then back to
+      <b>Balanced</b> to watch the GPU pass close them. That contrast is the whole pitch.
+    </div>
+  </section>
+</main>
+
+<script>
+/* ---- canvas: text that exists only as pixels ---------------------------- */
+(function () {
+  const c = document.getElementById('chit');
+  const g = c.getContext('2d');
+  g.fillStyle = '#0f131b'; g.fillRect(0, 0, c.width, c.height);
+  g.strokeStyle = '#26303f'; g.strokeRect(8, 8, c.width - 16, c.height - 16);
+
+  g.fillStyle = '#93a3bb';
+  g.font = '11px ui-monospace, monospace';
+  g.fillText('LAUNCH CLEARANCE CHIT / BAY 2 / RESTRICTED', 22, 34);
+
+  g.fillStyle = '#e3eaf5';
+  g.font = '600 15px ui-monospace, monospace';
+  g.fillText('Holder    : Ananya Verma', 22, 66);
+  g.fillText('Aadhaar   : 7856 2341 9086', 22, 90);
+  g.fillText('Pad coords: 13.7199 N, 80.2304 E', 22, 114);
+  g.fillText('Card      : 5425 2334 3010 9903', 22, 138);
+
+  g.fillStyle = '#f0b429';
+  g.font = '11px ui-monospace, monospace';
+  g.fillText('no DOM node carries any of the above', 22, 166);
+})();
+
+/* ---- rasterised image: SVG text flattened before the DOM sees it -------- */
+(function () {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="520" height="190">
+    <rect width="520" height="190" fill="#0f131b"/>
+    <rect x="8" y="8" width="504" height="174" fill="none" stroke="#26303f"/>
+    <text x="22" y="34" fill="#93a3bb" font-family="monospace" font-size="11">ANNEXURE C — SCANNED COPY</text>
+    <text x="22" y="66" fill="#e3eaf5" font-family="monospace" font-size="15" font-weight="600">Beneficiary : R. Krishnan</text>
+    <text x="22" y="90" fill="#e3eaf5" font-family="monospace" font-size="15" font-weight="600">PAN         : AXQPK8821M</text>
+    <text x="22" y="114" fill="#e3eaf5" font-family="monospace" font-size="15" font-weight="600">Account     : 50100247718834</text>
+    <text x="22" y="138" fill="#e3eaf5" font-family="monospace" font-size="15" font-weight="600">IFSC        : HDFC0001742</text>
+    <text x="22" y="166" fill="#f0b429" font-family="monospace" font-size="11">rasterised: unreachable from innerText</text>
+  </svg>`;
+  // percent-encoding, not btoa(): the markup contains non-Latin1 typography.
+  document.getElementById('annexure').src =
+    'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+})();
+
+/* ---- scriptless sandboxed frame: srcdoc so it needs no network fetch ---- */
+(function () {
+  // `sandbox` with no allow-scripts means nothing executes in here — not the
+  // vendor's code, and not our content script either. Lens A is blind by design.
+  document.getElementById('sandboxFrame').srcdoc = `<!doctype html><meta charset="utf-8">
+<style>
+  body { margin:0; padding:14px; background:#0f131b; color:#e3eaf5;
+         font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace; }
+  h3 { margin:0 0 12px; font:11px -apple-system,sans-serif; color:#93a3bb;
+       text-transform:uppercase; letter-spacing:.6px; }
+  .k { color:#697a94; display:inline-block; width:104px; }
+  .warn { color:#f0b429; font-size:11px; margin-top:12px;
+          border-top:1px solid #26303f; padding-top:9px; }
+</style>
+<h3>Settlement widget &middot; vendor origin</h3>
+<div><span class="k">Beneficiary</span> R. Krishnan</div>
+<div><span class="k">Account</span> 50100247718834</div>
+<div><span class="k">IFSC</span> HDFC0001742</div>
+<div><span class="k">Aadhaar</span> 4291 8836 5210</div>
+<div><span class="k">Contact</span> r.krishnan@example.in</div>
+<div><span class="k">Mobile</span> +91 9845512207</div>
+<div class="warn">sandboxed without allow-scripts &rarr; no content script can run here.
+Lens A is structurally blind; Lens B is not.</div>`;
+})();
+
+/* ---- something for the agent to actually do ---------------------------- */
+(function () {
+  const log = document.getElementById('actionLog');
+  const stamp = (m) => { log.textContent = `${new Date().toLocaleTimeString()} — ${m}`; };
+
+  document.querySelectorAll('nav a').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      document.querySelectorAll('nav a').forEach((x) => x.classList.toggle('active', x === a));
+      stamp(`navigated to ${a.dataset.view}`);
+    });
+  });
+  document.getElementById('authBtn').addEventListener('click', () => stamp('authenticate clicked'));
+  document.getElementById('newTransfer').addEventListener('click', () => stamp('new transfer started'));
+  document.getElementById('exportBtn').addEventListener('click', () => stamp('manifest export queued'));
+  document.querySelector('input[name=q]').addEventListener('change', (e) =>
+    stamp(`facility search set to "${e.target.value}"`));
+})();
+</script>
+</body>
+</html>

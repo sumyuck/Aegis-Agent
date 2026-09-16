@@ -1,0 +1,18 @@
+# Render blueprint — serves the planner API, the demo target page and the
+# self-test harness from a single HTTPS origin, exactly like `./run.sh` does
+# locally. Push this file and point Render at the repo (New → Blueprint).
+services:
+  - type: web
+    name: aegis-agent
+    runtime: python
+    plan: free
+    region: singapore
+    buildCommand: pip install -r server/requirements.txt
+    startCommand: uvicorn server.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /v1/health
+    envVars:
+      - key: PYTHON_VERSION
+        value: "3.11.9"
+      # heuristic needs no model, no GPU and no outbound network.
+      - key: AEGIS_PLANNER
+        value: heuristic

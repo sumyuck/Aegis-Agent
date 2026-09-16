@@ -1,0 +1,29 @@
+<!doctype html>
+<meta charset="utf-8">
+<!--
+  Aegis-Agent :: raw-pixel enclave.
+
+  This is the ONLY document in the extension that ever holds an un-sanitised frame,
+  and the CSP below is what makes that safe: `connect-src 'none'` removes fetch,
+  XHR, WebSocket, EventSource and sendBeacon from this realm entirely. The code
+  that can see your screen has no way to reach the network; the code that can reach
+  the network (the service worker) only ever receives the masked buffer.
+-->
+<meta http-equiv="Content-Security-Policy"
+      content="default-src 'none';
+               script-src 'self';
+               style-src 'unsafe-inline';
+               img-src data: blob:;
+               media-src blob: mediastream:;
+               connect-src 'none';
+               form-action 'none';
+               base-uri 'none';">
+<title>Aegis-Agent enclave</title>
+<style>
+  body { font: 12px ui-monospace, monospace; background: #0b0e13; color: #8fa3bf; margin: 0; padding: 10px; }
+</style>
+<body>
+  <div id="status">aegis enclave: idle</div>
+  <video id="tapVideo" muted playsinline style="display:none"></video>
+  <script type="module" src="offscreen.js"></script>
+</body>
