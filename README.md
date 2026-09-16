@@ -39,7 +39,7 @@ git clone <this-repo> && cd aegis-agent
 
 1. Open `chrome://extensions` → enable **Developer mode** → **Load unpacked** →
    select the `extension/` folder.
-2. Open **http://127.0.0.1:8077/demo/** — a synthetic mission-ops dashboard with
+2. Open **https://aegis-agent-yg91.onrender.com/demo/** — a synthetic mission-ops dashboard with
    nine secrets planted on it.
 3. Click the Aegis toolbar icon → **Perceive &amp; Redact**. No network call is made;
    you are looking at exactly the buffer a server would have received.
@@ -47,7 +47,7 @@ git clone <this-repo> && cd aegis-agent
    `open the Payments tab and then start a new transfer`
 
 **Want to check the perception stack without installing anything?**
-[http://127.0.0.1:8077/tools/selftest.html](http://127.0.0.1:8077/tools/selftest.html)
+[https://aegis-agent-yg91.onrender.com/tools/selftest.html](https://aegis-agent-yg91.onrender.com/tools/selftest.html)
 runs the real WebGPU and redaction modules against a synthetic frame with printed
 pass/fail assertions.
 
