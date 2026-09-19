@@ -3,18 +3,18 @@
 <title>payment instrument</title>
 <style>
   * { box-sizing:border-box; }
-  body { margin:0; padding:14px; background:#1c1a23; color:#ece8f7;
+  body { margin:0; padding:14px; background:#f7fcff; color:#163b57;
          font:13px/1.5 -apple-system,"Segoe UI",Roboto,sans-serif; }
-  h3 { margin:0 0 10px; font-size:12px; color:#a79cc4; text-transform:uppercase; letter-spacing:.6px; }
-  label { display:block; font-size:11.5px; color:#a79cc4; margin-bottom:9px; }
-  input { width:100%; margin-top:3px; padding:7px 9px; border-radius:8px; border:1px solid #3a3450;
-          background:#161420; color:#ece8f7; font:13px ui-monospace,monospace; }
+  h3 { margin:0 0 10px; font-size:12px; color:#668aa5; text-transform:uppercase; letter-spacing:.6px; }
+  label { display:block; font-size:11.5px; color:#547691; margin-bottom:9px; }
+  input { width:100%; margin-top:3px; padding:7px 9px; border-radius:8px; border:1px solid #cfe2f0;
+          background:#fff; color:#163b57; font:13px ui-monospace,monospace; }
   .row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-  .saved { font:12px ui-monospace,monospace; color:#a79cc4; border-top:1px solid #3a3450;
+  .saved { font:12px ui-monospace,monospace; color:#668aa5; border-top:1px solid #cfe2f0;
            margin-top:6px; padding-top:9px; }
 </style>
 <body>
-  <h3>Payment instrument · nested browsing context</h3>
+  <h3>Payment details</h3>
   <label>Card number
     <input name="cardnumber" autocomplete="cc-number" value="4111 1111 1111 1111">
   </label>
@@ -27,6 +27,6 @@
     </label>
   </div>
   <div class="saved">
-    on file: 5425 2334 3010 9903 · billing r.krishnan@example.in
+    on file: 5425 2334 3010 9903, billing r.krishnan@example.in
   </div>
 </body>

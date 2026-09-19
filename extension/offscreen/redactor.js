@@ -18,10 +18,10 @@
 
 import { createDetector } from './vision-webgpu.js';
 
-const MASK_FILL = 'rgb(24,28,36)';
-const MASK_FILL_RGB = [24, 28, 36];
-const MASK_BORDER = 'rgb(96,116,148)';
-const MASK_TEXT = 'rgb(198,212,232)';
+const MASK_FILL = 'rgb(223,242,252)';
+const MASK_FILL_RGB = [223, 242, 252];
+const MASK_BORDER = 'rgb(93,174,228)';
+const MASK_TEXT = 'rgb(22,59,87)';
 
 const SHORT_TOKEN = {
   '[MASK_PASSWORD]': '[PWD]',
@@ -206,7 +206,7 @@ function tileMapToDataUrl(tileMap, threshold, regions, imageW, imageH) {
   const h = Math.max(1, Math.round(imageH * scale));
   const c = new OffscreenCanvas(w, h);
   const ctx = c.getContext('2d');
-  ctx.fillStyle = '#0d1422';
+  ctx.fillStyle = '#eff8ff';
   ctx.fillRect(0, 0, w, h);
 
   const tileW = w / tilesX;
@@ -217,11 +217,11 @@ function tileMapToDataUrl(tileMap, threshold, regions, imageW, imageH) {
     const x = (i % tilesX) * tileW;
     const y = Math.floor(i / tilesX) * tileH;
     ctx.fillStyle = hot
-      ? `rgb(${Math.round(176 + v * 70)}, ${Math.round(72 + v * 82)}, ${Math.round(101 - v * 35)})`
-      : `rgb(${Math.round(17 + v * 32)}, ${Math.round(29 + v * 61)}, ${Math.round(48 + v * 99)})`;
+      ? `rgb(${Math.round(242 + v * 8)}, ${Math.round(174 + v * 32)}, ${Math.round(190 + v * 22)})`
+      : `rgb(${Math.round(219 - v * 35)}, ${Math.round(240 - v * 20)}, ${Math.round(252 - v * 8)})`;
     ctx.fillRect(x, y, Math.ceil(tileW), Math.ceil(tileH));
   }
-  ctx.strokeStyle = '#ffd26e';
+  ctx.strokeStyle = '#4a98cc';
   ctx.lineWidth = Math.max(1, Math.round(1.5 * scale));
   for (const region of regions.filter((r) => r.source === 'gpu-visual')) {
     const b = region.box;

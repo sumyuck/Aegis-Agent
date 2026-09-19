@@ -5,25 +5,24 @@
 <link rel="stylesheet" href="popup.css">
 <body>
 <header>
-  <div class="brand"><span class="shield" aria-hidden="true">◈</span><div><div class="title">Aegis-Agent</div><div class="sub">private browser perception</div></div></div>
+  <div class="brand"><span class="shield" aria-hidden="true">◈</span><div class="title">Aegis-Agent</div></div>
   <div class="hdr-right"><span id="gpuBadge" class="badge">checking device</span><span id="srvBadge" class="badge">checking planner</span><button id="popOut" class="icon-btn" title="Open a larger evidence window" aria-label="Open a larger evidence window">⤢</button></div>
 </header>
 
 <section class="mission">
-  <label for="goal">Mission</label>
+  <label for="goal">Try a task</label>
   <input id="goal" type="text" value="Open Payments, then start a transfer" autocomplete="off" spellcheck="false">
   <div class="row"><button id="dryRun" class="primary">Scan &amp; protect</button><button id="run" class="secondary" title="Plan and perform this mission">Run mission</button><button id="stop" class="icon-btn stop" disabled title="Stop the running agent" aria-label="Stop the running agent">■</button></div>
-  <div class="presets" aria-label="Example missions"><button type="button" data-goal="Open Payments">Open Payments</button><button type="button" data-goal="Start a transfer">Start transfer</button><button type="button" data-goal="Search for Chennai in the search facility">Search facility</button></div>
 </section>
 
 <nav class="tabs" aria-label="Aegis views"><button class="tab active" data-tab="evidence">Evidence</button><button class="tab" data-tab="audit">Audit <span id="maskCount" class="pill">0</span></button><button class="tab" data-tab="settings">Settings</button></nav>
 
 <main>
   <section class="panel active" id="panel-evidence">
-    <div id="verdict" class="verdict idle"><strong>Ready to protect this page</strong><span>Scan a page to create a local, verified safe preview.</span></div>
-    <div class="preview-head"><div class="viewToggle" role="tablist" aria-label="Evidence image"><button class="seg active" data-view="sanitized">Protected page</button><button class="seg" data-view="heatmap">Lens B map</button></div><span id="previewMeta" class="preview-meta">No frame</span></div>
+    <div id="verdict" class="verdict idle"><strong>Ready to protect</strong><span>Scan this page for a safe preview.</span></div>
+    <div class="preview-head"><div class="viewToggle" role="tablist" aria-label="Evidence image"><button class="seg active" data-view="sanitized">Protected page</button><button class="seg" data-view="heatmap">Lens B map</button></div></div>
     <div class="stage"><img id="shot" alt="Sanitized browser frame" hidden><img id="heat" alt="On-device visual detector signal map" hidden><div id="stageEmpty" class="empty"><span>◈</span> Your safe preview appears here</div></div>
-    <div id="heatLegend" class="heat-legend" hidden><span><i class="cool"></i>low signal</span><span><i class="hot"></i>text-like pixels</span><span><i class="box"></i>masked visual region</span></div>
+    <div id="heatLegend" class="heat-legend" hidden></div>
     <div class="proof-grid" id="metrics"></div>
     <details class="trace-wrap"><summary>Activity</summary><div id="log" class="log" aria-live="polite"></div></details>
   </section>
@@ -32,13 +31,13 @@
     <div id="maskSummary" class="audit-summary">No protection scan yet.</div>
     <div class="table-wrap"><table id="maskTable"><thead><tr><th>Protected as</th><th>Lens</th><th>Proof</th></tr></thead><tbody></tbody></table></div>
     <div id="fwVerdict" class="verdict idle"><strong>Egress firewall idle</strong><span>Nothing has been sent to a planner.</span></div>
-    <details class="wire-wrap"><summary>Safe request manifest</summary><pre id="wire" class="code">—</pre></details>
+    <details class="wire-wrap"><summary>Safe request manifest</summary><pre id="wire" class="code">No request yet</pre></details>
     <details class="timing-wrap"><summary>Performance details</summary><div id="timings" class="timings"></div></details>
   </section>
 
   <section class="panel" id="panel-settings">
     <label>Planner endpoint<div class="inline"><input id="serverUrl" type="text" spellcheck="false"><button id="ping" class="secondary small">Test</button></div></label>
-    <label>Protection mode<select id="mode"><option value="balanced">Balanced — DOM + visual lens</option><option value="paranoid">Paranoid — mask all text-like regions</option><option value="dom-only">DOM only — for comparison</option></select></label>
+    <label>Protection mode<select id="mode"><option value="balanced">Balanced: DOM + visual lens</option><option value="paranoid">Paranoid: mask all text-like regions</option><option value="dom-only">DOM only: comparison mode</option></select></label>
     <div class="check-grid"><label class="check"><input id="useGpu" type="checkbox"> Use WebGPU when available</label><label class="check"><input id="strictCapture" type="checkbox"> Keep raw frames out of the worker</label><label class="check"><input id="wantTileMap" type="checkbox"> Generate Lens B map</label></div>
     <label>Visual sensitivity <span id="thrVal" class="pill"></span><input id="threshold" type="range" min="0.5" max="2.2" step="0.05" title="Lower values mask more aggressively"></label>
     <div class="grid2"><label>Tile size<select id="tile"><option value="4">4 px</option><option value="8">8 px</option><option value="16">16 px</option></select></label><label>Image quality<select id="quality"><option value="0.55">Smaller</option><option value="0.72">Balanced</option><option value="0.85">Sharper</option></select></label></div>

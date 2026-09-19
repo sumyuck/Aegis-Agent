@@ -2,95 +2,79 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Bharat Mission Ops — Aegis-Agent demo target</title>
+<title>Bharat Mission Ops | Aegis-Agent demo target</title>
 <style>
   :root {
-    --bg:#1c1a23; --panel:#242130; --panel2:#2b2739; --line:#3a3450;
-    --fg:#ece8f7; --dim:#a79cc4; --muted:#736a8c;
-    --lavender:#b9a6f7; --lavender-dim:#8b7bc4;
-    --mint:#8fe3c4; --peach:#f6c99a; --rose:#f5a3b3; --sky:#9ecdf5;
-    --accent: var(--lavender);
+    --bg:#f1f9ff; --panel:#ffffff; --panel2:#f6fbff; --line:#cfe2f0;
+    --fg:#163b57; --dim:#547691; --muted:#7c9bb0;
+    --accent:#65afe2; --accent-soft:#bce2f8; --mint:#42ad94; --sky:#3f93c9;
   }
   * { box-sizing:border-box; }
-  body { margin:0; background:var(--bg); color:var(--fg);
-         font:14px/1.5 -apple-system,"Segoe UI",Roboto,sans-serif; }
+  body { margin:0; background:linear-gradient(180deg,#f7fcff 0,#eef8ff 100%); color:var(--fg);
+         font:14px/1.5 -apple-system,"Segoe UI",Roboto,sans-serif; min-height:100vh; }
   header { display:flex; align-items:center; justify-content:space-between;
-           padding:14px 24px; background:linear-gradient(165deg,#272238,#1a1822);
+           padding:17px max(24px,calc((100vw - 1280px)/2)); background:rgba(255,255,255,.84);
            border-bottom:1px solid var(--line); }
-  .logo { display:flex; align-items:center; gap:11px; font-weight:650; letter-spacing:.3px; }
-  .logo span.mark { color:var(--lavender); font-size:20px; filter:drop-shadow(0 0 6px rgba(185,166,247,.35)); }
-  .who { font-size:12px; color:var(--dim); text-align:right; }
-  nav { display:flex; gap:2px; padding:0 24px; background:#1a1822; border-bottom:1px solid var(--line); }
+  .logo { display:flex; align-items:center; gap:10px; font-size:16px; font-weight:720; letter-spacing:-.1px; }
+  .logo span.mark { color:var(--accent); font-size:23px; filter:drop-shadow(0 2px 4px rgba(84,166,218,.24)); }
+  .who { display:flex; align-items:center; gap:8px; padding:6px 10px; border:1px solid var(--line); border-radius:999px; background:var(--panel2); font-size:12px; color:var(--dim); }
+  .session-token { color:var(--muted); font:10px ui-monospace,monospace; }
+  nav { display:flex; gap:4px; padding:0 max(24px,calc((100vw - 1280px)/2)); background:rgba(255,255,255,.65); border-bottom:1px solid var(--line); }
   nav a { padding:11px 16px; color:var(--muted); text-decoration:none; font-size:13px;
           border-bottom:2px solid transparent; transition:color .15s; }
   nav a:hover { color:var(--fg); }
-  nav a.active { color:var(--fg); border-bottom-color:var(--lavender); }
-  main { padding:22px 24px 44px; max-width:1180px; }
-  h2 { font-size:14.5px; margin:0 0 12px; letter-spacing:.1px; font-weight:600; }
-  .grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-  .card { background:var(--panel); border:1px solid var(--line); border-radius:14px; padding:18px;
-          transition:border-color .2s; }
-  .card:hover { border-color:var(--lavender-dim); }
-  .card h2 { display:flex; align-items:center; justify-content:space-between; gap:10px; }
-  .tag { font:9.5px ui-monospace,monospace; padding:3px 9px; border-radius:20px;
-         border:1px solid var(--line); background:var(--panel2); color:var(--dim); white-space:nowrap; }
-  .tag.a { color:var(--sky); border-color:#2d4a5e; background:#182430; }
-  .tag.b { color:var(--lavender); border-color:#43305e; background:#241f33; }
-  dl { display:grid; grid-template-columns:120px 1fr; gap:8px 12px; margin:0; font-size:12.5px; }
+  nav a.active { color:var(--sky); border-bottom-color:var(--accent); }
+  main { width:min(1280px,100%); margin:auto; padding:26px 24px 44px; }
+  h2 { font-size:16px; margin:0 0 15px; letter-spacing:-.15px; font-weight:700; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:18px; }
+  .card { background:rgba(255,255,255,.92); border:1px solid var(--line); border-radius:18px; padding:20px; box-shadow:0 10px 26px rgba(57,117,155,.07); transition:transform .18s,border-color .18s,box-shadow .18s; }
+  .card:hover { border-color:#a9d5ef; transform:translateY(-2px); box-shadow:0 14px 30px rgba(57,117,155,.11); }
+  dl { display:grid; grid-template-columns:132px 1fr; gap:9px 12px; margin:0; font-size:13px; }
   dt { color:var(--muted); }
   dd { margin:0; font-family:ui-monospace,SFMono-Regular,Menlo,monospace; }
-  label { display:block; font-size:11.5px; color:var(--dim); margin-bottom:11px; }
+  label { display:block; font-size:12px; color:var(--dim); margin-bottom:12px; font-weight:600; }
   input, select { width:100%; margin-top:4px; padding:8px 10px; border-radius:8px;
-                  border:1px solid var(--line); background:#161420; color:var(--fg); font-size:13px; }
-  input:focus { outline:none; border-color:var(--lavender-dim); box-shadow:0 0 0 3px rgba(185,166,247,.1); }
+                  border:1px solid var(--line); background:#fbfdff; color:var(--fg); font-size:13px; }
+  input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(101,175,226,.15); }
   .row2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
   button { font:inherit; font-size:12.5px; padding:9px 15px; border-radius:8px; cursor:pointer;
-           background:linear-gradient(160deg,#c3b2fa,#a68ef0); border:1px solid #a68ef0;
-           color:#211b38; font-weight:650; transition:transform .05s; }
+           background:linear-gradient(135deg,#b9e1f9,#7fc0e9); border:1px solid #85c3e9;
+           color:#163b57; font-weight:700; transition:transform .05s,box-shadow .15s; }
+  button:hover { box-shadow:0 5px 12px rgba(63,147,201,.18); }
   button:active { transform:translateY(1px); }
-  button.sec { background:var(--panel2); border-color:var(--line); color:var(--fg); font-weight:500; }
-  canvas { border:1px solid var(--line); border-radius:10px; display:block; background:#161420; }
-  iframe { width:100%; border:1px solid var(--line); border-radius:10px; background:#161420; }
-  .note { font-size:11px; color:var(--muted); margin-top:9px; line-height:1.5; }
-  .manifest { margin-top:16px; }
+  button.sec { background:var(--panel2); border-color:var(--line); color:var(--dim); font-weight:650; }
+  canvas { width:100%; height:auto; border:1px solid var(--line); border-radius:12px; display:block; background:#f8fcff; }
+  iframe { width:100%; border:1px solid var(--line); border-radius:12px; background:#f8fcff; }
+  .note { font-size:11px; color:var(--muted); margin-top:10px; line-height:1.5; }
+  .status { display:flex; gap:10px; font-size:12px; color:var(--dim); margin-top:14px; }.dot { width:7px; height:7px; border-radius:50%; background:var(--mint); display:inline-block; margin-right:5px; }
+  details.manifest { margin-top:18px; }.manifest summary { cursor:pointer; color:var(--dim); font-size:13px; font-weight:700; }.manifest .card { margin-top:10px; }
   .manifest table { width:100%; border-collapse:collapse; font-size:12px; }
   .manifest th { text-align:left; font-size:9.5px; text-transform:uppercase; letter-spacing:.5px;
                  color:var(--muted); border-bottom:1px solid var(--line); padding:7px 6px; font-weight:500; }
-  .manifest td { padding:7px 6px; border-bottom:1px solid #2a2638; font-family:ui-monospace,monospace; }
-  .lensA { color:var(--sky); } .lensB { color:var(--lavender); }
-  #banner { background:#2b2418; border:1px solid #4a3a12; color:var(--peach); font-size:12px;
-            padding:10px 15px; margin:0 24px 18px; border-radius:10px; }
-  .status { display:flex; gap:18px; font-size:11.5px; color:var(--dim); margin-top:12px; }
-  .dot { width:7px; height:7px; border-radius:50%; background:var(--mint); display:inline-block; margin-right:5px; }
+  .manifest td { padding:7px 6px; border-bottom:1px solid #e6f0f7; font-family:ui-monospace,monospace; }
+  .lensA { color:var(--sky); } .lensB { color:#5c78b8; }
+  @media (max-width:760px) { header { padding:14px 18px; }.who { display:none; } nav { padding:0 12px; overflow:auto; } main { padding:18px 14px 30px; }.grid { grid-template-columns:1fr; }.card { padding:17px; } }
 </style>
 <body>
 
 <header>
-  <div class="logo"><span class="mark">◈</span> BHARAT MISSION OPS <span class="tag">SIM · NOT REAL DATA</span></div>
-  <div class="who">
-    Operator: A. Verma · Clearance L3<br>
-    <span style="color:var(--muted)">session</span>
-    <code style="font-size:11px">eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvcHMtNDIiLCJjbCI6M30.q7Zx1KpLm9AeVv3TdRb8Nw</code>
-  </div>
+  <div class="logo"><span class="mark">◈</span> Bharat Mission Ops</div>
+  <div class="who"><span>Operator A. Verma</span><code class="session-token">eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJvcHMtNDIiLCJjbCI6M30.q7Zx1KpLm9AeVv3TdRb8Nw</code></div>
 </header>
 
 <nav>
   <a href="#dashboard" class="active" data-view="dashboard">Dashboard</a>
   <a href="#payments"  data-view="payments">Payments</a>
   <a href="#records"   data-view="records">Personnel Records</a>
-  <a href="#telemetry" data-view="telemetry">Telemetry</a>
+  <a href="#telemetry" data-view="telemetry">Activity</a>
 </nav>
-
-<div id="banner">
-  Synthetic target — every value below is fabricated. Nine secrets, four hiding places. See the manifest at the bottom.
-</div>
 
 <main>
   <div class="grid">
 
     <!-- ---------------------------------------------- Lens A: DOM text -->
     <section class="card">
-      <h2>Operator identity <span class="tag a">Lens A · DOM text</span></h2>
+      <h2>Operator identity</h2>
       <dl>
         <dt>Full name</dt><dd>Ananya Verma</dd>
         <dt>Aadhaar</dt><dd>3527 4183 9170</dd>
@@ -101,12 +85,12 @@
         <dt>Passport</dt><dd>M4471829</dd>
         <dt>Payroll UPI</dt><dd>averma.ops@okhdfcbank</dd>
       </dl>
-      <div class="status"><span><span class="dot"></span>verified</span><span>last sync 4 min ago</span></div>
+      <div class="status"><span><span class="dot"></span>Verified</span></div>
     </section>
 
     <!-- ---------------------------------------------- Lens A: form fields -->
     <section class="card">
-      <h2>Re-authenticate <span class="tag a">Lens A · field attributes</span></h2>
+      <h2>Re-authenticate</h2>
       <label>Operator ID
         <input type="text" name="operator" value="OPS-4417" autocomplete="username">
       </label>
@@ -129,58 +113,56 @@
         <button class="sec" id="newTransfer">New transfer</button>
         <button class="sec" id="exportBtn">Export manifest</button>
       </div>
-      <div class="note" id="actionLog">no agent action yet</div>
+      <div class="note" id="actionLog"></div>
     </section>
 
     <!-- ---------------------------------------------- Lens B: canvas -->
     <section class="card">
-      <h2>Launch clearance chit <span class="tag b">Lens B · canvas pixels</span></h2>
+      <h2>Launch clearance chit</h2>
       <canvas id="chit" width="520" height="190"></canvas>
-      <div class="note">Painted with <code>fillText()</code> — no text node, no <code>alt</code>. Only a pixel-level pass sees this.</div>
     </section>
 
     <!-- ---------------------------------------------- Lens B: baked image -->
     <section class="card">
-      <h2>Scanned annexure <span class="tag b">Lens B · rasterised image</span></h2>
+      <h2>Scanned annexure</h2>
       <img id="annexure" width="520" height="190" alt="scanned annexure page"
            style="border:1px solid var(--line);border-radius:10px;display:block">
-      <div class="note">Glyphs rasterised before reaching the page — same as a PDF page or a pasted screenshot.</div>
     </section>
 
     <!-- ---------------------------------------------- Lens A: nested frame -->
     <section class="card">
-      <h2>Payment instrument <span class="tag a">Lens A · nested frame</span></h2>
+      <h2>Payment instrument</h2>
       <iframe id="payFrame" src="frame-payment.html" height="250" title="payment instrument"></iframe>
-      <div class="note">Separate browsing context — the parent pushes down its offset so boxes land correctly.</div>
     </section>
 
     <!-- ---------------------------------------------- Lens B: sandboxed frame -->
     <section class="card">
-      <h2>Third-party widget <span class="tag b">Lens B · scriptless sandbox</span></h2>
+      <h2>Third-party widget</h2>
       <iframe id="sandboxFrame" height="250" sandbox title="third-party widget"></iframe>
-      <div class="note">No <code>allow-scripts</code> — no content script can run inside. Lens A is blind here by design; Lens B isn't.</div>
     </section>
   </div>
 
   <!-- ------------------------------------------------------------ manifest -->
-  <section class="card manifest">
+  <details class="manifest">
+    <summary>Demo data map</summary>
+  <section class="card">
     <h2>Planted-secret manifest</h2>
     <table>
       <thead><tr><th>#</th><th>Secret</th><th>Where</th><th>Caught by</th><th>Token</th></tr></thead>
       <tbody>
         <tr><td>1</td><td>Session JWT</td><td>header, DOM text</td><td class="lensA">Lens A</td><td>[MASK_TOKEN]</td></tr>
         <tr><td>2</td><td>Aadhaar (Verhoeff-valid)</td><td>identity card</td><td class="lensA">Lens A</td><td>[MASK_AADHAAR]</td></tr>
-        <tr><td>3</td><td>PAN · passport · DOB · UPI</td><td>identity card</td><td class="lensA">Lens A</td><td>[MASK_PAN] …</td></tr>
-        <tr><td>4</td><td>Email · mobile</td><td>identity card</td><td class="lensA">Lens A</td><td>[MASK_EMAIL] [MASK_PHONE]</td></tr>
-        <tr><td>5</td><td>Password · OTP</td><td>auth form</td><td class="lensA">Lens A</td><td>[MASK_PASSWORD] [MASK_OTP]</td></tr>
-        <tr><td>6</td><td>Card number · CVC</td><td>nested iframe</td><td class="lensA">Lens A</td><td>[MASK_CARD] [MASK_CVC]</td></tr>
+        <tr><td>3</td><td>PAN, passport, DOB, UPI</td><td>identity card</td><td class="lensA">Lens A</td><td>[MASK_PAN] and more</td></tr>
+        <tr><td>4</td><td>Email, mobile</td><td>identity card</td><td class="lensA">Lens A</td><td>[MASK_EMAIL] [MASK_PHONE]</td></tr>
+        <tr><td>5</td><td>Password, OTP</td><td>auth form</td><td class="lensA">Lens A</td><td>[MASK_PASSWORD] [MASK_OTP]</td></tr>
+        <tr><td>6</td><td>Card number, CVC</td><td>nested iframe</td><td class="lensA">Lens A</td><td>[MASK_CARD] [MASK_CVC]</td></tr>
         <tr><td>7</td><td>Aadhaar + coordinates</td><td><code>&lt;canvas&gt;</code> pixels</td><td class="lensB">Lens B</td><td>[MASK_PII]</td></tr>
         <tr><td>8</td><td>Annexure text</td><td>rasterised <code>&lt;img&gt;</code></td><td class="lensB">Lens B</td><td>[MASK_PII]</td></tr>
         <tr><td>9</td><td>Beneficiary + account</td><td>scriptless sandbox</td><td class="lensB">Lens B</td><td>[MASK_PII]</td></tr>
       </tbody>
     </table>
-    <div class="note">Switch to <b>DOM only</b> mode to watch rows 7–9 leak; switch back to <b>Balanced</b> to close them.</div>
   </section>
+  </details>
 </main>
 
 <script>
@@ -188,21 +170,21 @@
 (function () {
   const c = document.getElementById('chit');
   const g = c.getContext('2d');
-  g.fillStyle = '#161420'; g.fillRect(0, 0, c.width, c.height);
-  g.strokeStyle = '#3a3450'; g.strokeRect(8, 8, c.width - 16, c.height - 16);
+  g.fillStyle = '#f7fcff'; g.fillRect(0, 0, c.width, c.height);
+  g.strokeStyle = '#cfe2f0'; g.strokeRect(8, 8, c.width - 16, c.height - 16);
 
-  g.fillStyle = '#a79cc4';
+  g.fillStyle = '#668aa5';
   g.font = '11px ui-monospace, monospace';
   g.fillText('LAUNCH CLEARANCE CHIT / BAY 2 / RESTRICTED', 22, 34);
 
-  g.fillStyle = '#ece8f7';
+  g.fillStyle = '#163b57';
   g.font = '600 15px ui-monospace, monospace';
   g.fillText('Holder    : Ananya Verma', 22, 66);
   g.fillText('Aadhaar   : 7856 2341 9086', 22, 90);
   g.fillText('Pad coords: 13.7199 N, 80.2304 E', 22, 114);
   g.fillText('Card      : 5425 2334 3010 9903', 22, 138);
 
-  g.fillStyle = '#f6c99a';
+  g.fillStyle = '#3f93c9';
   g.font = '11px ui-monospace, monospace';
   g.fillText('no DOM node carries any of the above', 22, 166);
 })();
@@ -210,14 +192,14 @@
 /* ---- rasterised image: SVG text flattened before the DOM sees it -------- */
 (function () {
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="520" height="190">
-    <rect width="520" height="190" fill="#161420"/>
-    <rect x="8" y="8" width="504" height="174" fill="none" stroke="#3a3450"/>
-    <text x="22" y="34" fill="#a79cc4" font-family="monospace" font-size="11">ANNEXURE C — SCANNED COPY</text>
-    <text x="22" y="66" fill="#ece8f7" font-family="monospace" font-size="15" font-weight="600">Beneficiary : R. Krishnan</text>
-    <text x="22" y="90" fill="#ece8f7" font-family="monospace" font-size="15" font-weight="600">PAN         : AXQPK8821M</text>
-    <text x="22" y="114" fill="#ece8f7" font-family="monospace" font-size="15" font-weight="600">Account     : 50100247718834</text>
-    <text x="22" y="138" fill="#ece8f7" font-family="monospace" font-size="15" font-weight="600">IFSC        : HDFC0001742</text>
-    <text x="22" y="166" fill="#f6c99a" font-family="monospace" font-size="11">rasterised: unreachable from innerText</text>
+    <rect width="520" height="190" fill="#f7fcff"/>
+    <rect x="8" y="8" width="504" height="174" fill="none" stroke="#cfe2f0"/>
+    <text x="22" y="34" fill="#668aa5" font-family="monospace" font-size="11">ANNEXURE C / SCANNED COPY</text>
+    <text x="22" y="66" fill="#163b57" font-family="monospace" font-size="15" font-weight="600">Beneficiary : R. Krishnan</text>
+    <text x="22" y="90" fill="#163b57" font-family="monospace" font-size="15" font-weight="600">PAN         : AXQPK8821M</text>
+    <text x="22" y="114" fill="#163b57" font-family="monospace" font-size="15" font-weight="600">Account     : 50100247718834</text>
+    <text x="22" y="138" fill="#163b57" font-family="monospace" font-size="15" font-weight="600">IFSC        : HDFC0001742</text>
+    <text x="22" y="166" fill="#3f93c9" font-family="monospace" font-size="11">rasterised copy</text>
   </svg>`;
   // percent-encoding, not btoa(): the markup contains non-Latin1 typography.
   document.getElementById('annexure').src =
@@ -226,33 +208,32 @@
 
 /* ---- scriptless sandboxed frame: srcdoc so it needs no network fetch ---- */
 (function () {
-  // `sandbox` with no allow-scripts means nothing executes in here — not the
+  // `sandbox` with no allow-scripts means nothing executes in here, not the
   // vendor's code, and not our content script either. Lens A is blind by design.
   document.getElementById('sandboxFrame').srcdoc = `<!doctype html><meta charset="utf-8">
 <style>
-  body { margin:0; padding:14px; background:#161420; color:#ece8f7;
+  body { margin:0; padding:14px; background:#f7fcff; color:#163b57;
          font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace; }
-  h3 { margin:0 0 12px; font:11px -apple-system,sans-serif; color:#a79cc4;
+  h3 { margin:0 0 12px; font:11px -apple-system,sans-serif; color:#668aa5;
        text-transform:uppercase; letter-spacing:.6px; }
-  .k { color:#736a8c; display:inline-block; width:104px; }
-  .warn { color:#f6c99a; font-size:11px; margin-top:12px;
-          border-top:1px solid #3a3450; padding-top:9px; }
+  .k { color:#7c9bb0; display:inline-block; width:104px; }
+  .warn { color:#3f93c9; font-size:11px; margin-top:12px;
+          border-top:1px solid #cfe2f0; padding-top:9px; }
 </style>
-<h3>Settlement widget &middot; vendor origin</h3>
+<h3>Settlement widget</h3>
 <div><span class="k">Beneficiary</span> R. Krishnan</div>
 <div><span class="k">Account</span> 50100247718834</div>
 <div><span class="k">IFSC</span> HDFC0001742</div>
 <div><span class="k">Aadhaar</span> 4291 8836 5210</div>
 <div><span class="k">Contact</span> r.krishnan@example.in</div>
 <div><span class="k">Mobile</span> +91 9845512207</div>
-<div class="warn">sandboxed without allow-scripts &rarr; no content script can run here.
-Lens A is structurally blind; Lens B is not.</div>`;
+<div class="warn">Third-party content</div>`;
 })();
 
 /* ---- something for the agent to actually do ---------------------------- */
 (function () {
   const log = document.getElementById('actionLog');
-  const stamp = (m) => { log.textContent = `${new Date().toLocaleTimeString()} — ${m}`; };
+  const stamp = (m) => { log.textContent = `${new Date().toLocaleTimeString()}: ${m}`; };
 
   document.querySelectorAll('nav a').forEach((a) => {
     a.addEventListener('click', (e) => {
