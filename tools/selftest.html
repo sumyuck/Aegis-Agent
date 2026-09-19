@@ -2,49 +2,38 @@
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Aegis-Agent · perception self-test</title>
+<title>Aegis-Agent self-test</title>
 <style>
-  :root { --bg:#1c1a23; --panel:#242130; --line:#3a3450; --fg:#ece8f7;
-          --dim:#a79cc4; --muted:#736a8c; --lavender:#b9a6f7; --lavender-dim:#8b7bc4;
-          --mint:#8fe3c4; --peach:#f6c99a; --rose:#f5a3b3; --sky:#9ecdf5; --accent:var(--lavender);
-          --mono: ui-monospace,SFMono-Regular,Menlo,monospace; }
-  body { margin:0; background:var(--bg); color:var(--fg); font:14px/1.5 -apple-system,"Segoe UI",Roboto,sans-serif; padding:24px; }
-  h1 { font-size:17px; margin:0 0 4px; font-weight:650; } h1 span { color:var(--lavender); }
-  .lede { color:var(--muted); font-size:12.5px; max-width:820px; margin-bottom:18px; }
-  .bar { display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:16px;
-         background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:12px 14px; }
-  button { font:inherit; font-size:13px; padding:9px 15px; border-radius:9px; cursor:pointer;
-           background:linear-gradient(160deg,#c3b2fa,#a68ef0); border:1px solid #a68ef0; color:#211b38; font-weight:650; }
-  button.sec { background:#2b2739; border-color:var(--line); color:var(--fg); font-weight:500; }
-  label { font-size:12px; color:var(--dim); display:flex; gap:7px; align-items:center; }
-  input[type=range] { accent-color:var(--lavender); }
-  select { background:#161420; color:var(--fg); border:1px solid var(--line); border-radius:7px; padding:5px 7px; font-size:12px; }
-  .verdict { font:12px/1.6 var(--mono); padding:11px 13px; border-radius:10px; border:1px solid var(--line);
-             background:var(--panel); color:var(--dim); margin-bottom:16px; white-space:pre-wrap; }
-  .verdict.ok { color:#c9f5e2; background:#152922; border-color:#2d5a49; }
-  .verdict.bad { color:#fbd7dd; background:#2a1a1f; border-color:#5a3540; }
-  .cols { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
-  .col h3 { font:10px -apple-system,sans-serif; text-transform:uppercase; letter-spacing:.6px;
-            color:var(--muted); margin:0 0 7px; font-weight:500; }
-  .col img, .col canvas { width:100%; border:1px solid var(--line); border-radius:10px; display:block; background:#0f0d15; }
-  pre { font:10.5px/1.5 var(--mono); background:#0f0d15; border:1px solid var(--line); border-radius:10px;
-        padding:10px; overflow:auto; max-height:320px; color:#b8a9d9; }
-  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:16px; }
-  table { width:100%; border-collapse:collapse; font:11px var(--mono); }
-  th { text-align:left; font:9.5px -apple-system,sans-serif; text-transform:uppercase; letter-spacing:.4px;
-       color:var(--muted); border-bottom:1px solid var(--line); padding:6px 5px; font-weight:500; }
-  td { padding:5px 5px; border-bottom:1px solid #2a2638; }
-  .m { display:grid; grid-template-columns:repeat(6,1fr); gap:8px; margin-top:14px; }
-  .m div { background:var(--panel); border:1px solid var(--line); border-radius:9px; padding:7px 9px; }
-  .m .k { font:9px -apple-system,sans-serif; text-transform:uppercase; letter-spacing:.4px; color:var(--muted); }
-  .m .v { font:13px var(--mono); }
+  :root { --bg:#f1f9ff; --panel:#fff; --panel-blue:#f7fcff; --line:#cfe2f0; --fg:#163b57;
+          --dim:#547691; --muted:#7c9bb0; --accent:#65afe2; --mint:#248b78; --rose:#b65d6e; --sky:#3f93c9;
+          --mono:ui-monospace,SFMono-Regular,Menlo,monospace; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; background:linear-gradient(180deg,#f9fdff,#eef8ff); color:var(--fg); font:14px/1.5 -apple-system,"Segoe UI",Roboto,sans-serif; }
+  main { width:min(1400px,100%); margin:auto; padding:28px 24px 44px; }
+  h1 { font-size:22px; margin:0 0 5px; font-weight:750; letter-spacing:-.3px; } h1 span { color:var(--sky); }
+  .lede { color:var(--dim); font-size:13px; max-width:700px; margin:0 0 20px; }
+  .bar { display:flex; gap:11px; align-items:center; flex-wrap:wrap; margin-bottom:17px; background:rgba(255,255,255,.9); border:1px solid var(--line); border-radius:15px; padding:13px 15px; box-shadow:0 8px 22px rgba(57,117,155,.07); }
+  button { font:inherit; font-size:13px; padding:9px 15px; border-radius:9px; cursor:pointer; background:linear-gradient(135deg,#b9e1f9,#7fc0e9); border:1px solid #85c3e9; color:#163b57; font-weight:700; }
+  button.sec { background:var(--panel-blue); border-color:var(--line); color:var(--dim); }
+  label { font-size:12px; color:var(--dim); display:flex; gap:7px; align-items:center; font-weight:600; }
+  input[type=range] { accent-color:var(--accent); }
+  select { background:#fff; color:var(--fg); border:1px solid var(--line); border-radius:8px; padding:6px 8px; font-size:12px; }
+  .verdict { font:12px/1.6 var(--mono); padding:12px 14px; border-radius:12px; border:1px solid var(--line); background:#f9fcff; color:var(--dim); margin-bottom:17px; white-space:pre-wrap; }
+  .verdict.ok { color:#16715f; background:#e4f7f1; border-color:#a8dbcd; }.verdict.bad { color:#a4475c; background:#fff0f3; border-color:#efc1ca; }
+  .cols { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }.col { min-width:0; }.col h3 { color:var(--dim); margin:0 0 8px; font-size:13px; font-weight:700; }
+  .col canvas, .preview { width:100%; border:1px solid var(--line); border-radius:12px; display:block; background:#f7fcff; }
+  .preview { position:relative; min-height:220px; aspect-ratio:900 / 560; overflow:hidden; display:grid; place-items:center; color:var(--muted); font-size:12px; }
+  .preview img { width:100%; height:100%; object-fit:contain; }.preview img[hidden], .preview span[hidden] { display:none; }
+  pre { font:10.5px/1.5 var(--mono); background:#fbfdff; border:1px solid var(--line); border-radius:12px; padding:11px; overflow:auto; max-height:320px; color:#3d6685; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:18px; }.grid2 > div { padding:14px; background:rgba(255,255,255,.84); border:1px solid var(--line); border-radius:14px; }
+  table { width:100%; border-collapse:collapse; font:11px var(--mono); } th { text-align:left; color:var(--muted); border-bottom:1px solid var(--line); padding:7px 6px; font:700 10px -apple-system,sans-serif; } td { padding:7px 6px; border-bottom:1px solid #e6f0f7; }
+  .m { display:grid; grid-template-columns:repeat(6,1fr); gap:9px; margin-top:16px; }.m div { background:rgba(255,255,255,.9); border:1px solid var(--line); border-radius:11px; padding:8px 10px; }.m .k { font:10px -apple-system,sans-serif; color:var(--muted); }.m .v { font:13px var(--mono); }
+  @media (max-width:900px) { .cols,.grid2 { grid-template-columns:1fr; }.m { grid-template-columns:repeat(3,1fr); } main { padding:20px 14px 30px; } }
 </style>
 <body>
-<h1>Aegis&#8209;Agent <span>perception self&#8209;test</span></h1>
-<p class="lede">
-  Runs the real perception + redaction pipeline against a synthetic frame — no extension
-  install needed. Asserts every mask came back pixel&#8209;uniform.
-</p>
+<main>
+<h1>Aegis-Agent <span>self-test</span></h1>
+<p class="lede">Run the complete local perception and redaction pipeline on a synthetic frame.</p>
 
 <div class="bar">
   <button id="run">Run self-test</button>
@@ -62,19 +51,20 @@
 <div id="verdict" class="verdict">Press <b>Run self-test</b>.</div>
 
 <div class="cols">
-  <div class="col"><h3>1 · synthetic frame (the "screenshot")</h3><canvas id="src" width="900" height="560"></canvas></div>
-  <div class="col"><h3>2 · GPU textness heatmap</h3><img id="heat" alt="heatmap"></div>
-  <div class="col"><h3>3 · sanitised output (what a server would get)</h3><img id="out" alt="sanitised"></div>
+  <div class="col"><h3>Source frame</h3><canvas id="src" width="900" height="560"></canvas></div>
+  <div class="col"><h3>Lens B map</h3><div class="preview"><img id="heat" alt="heatmap" hidden><span id="heatEmpty">Run the test to view</span></div></div>
+  <div class="col"><h3>Protected output</h3><div class="preview"><img id="out" alt="sanitised" hidden><span id="outEmpty">Run the test to view</span></div></div>
 </div>
 
 <div class="m" id="metrics"></div>
 
 <div class="grid2">
-  <div><h3 style="font:10px -apple-system,sans-serif;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)">Regions &amp; uniformity proofs</h3>
+  <div><h3 style="margin:0 0 10px;font-size:13px">Masks and proof</h3>
     <table id="tbl"><thead><tr><th>Token</th><th>Lens</th><th>Box</th><th>Px</th><th>Uniform</th><th>Colours</th></tr></thead><tbody></tbody></table></div>
-  <div><h3 style="font:10px -apple-system,sans-serif;text-transform:uppercase;letter-spacing:.6px;color:var(--muted)">Attestation + assertions</h3>
-    <pre id="json">—</pre></div>
+  <div><h3 style="margin:0 0 10px;font-size:13px">Attestation</h3>
+    <pre id="json">No result yet</pre></div>
 </div>
+</main>
 
 <script type="module">
 import { sanitize } from '/extension/offscreen/redactor.js';
@@ -87,11 +77,11 @@ const src = $('src');
 function render() {
   const g = src.getContext('2d');
   const W = src.width, H = src.height;
-  g.fillStyle = '#161420'; g.fillRect(0, 0, W, H);
+  g.fillStyle = '#f7fcff'; g.fillRect(0, 0, W, H);
 
   // photographic region — a smooth gradient plus noise: high variance, low crossings
   const grad = g.createLinearGradient(520, 40, 880, 260);
-  grad.addColorStop(0, '#3d5a7a'); grad.addColorStop(.5, '#7a5a3d'); grad.addColorStop(1, '#2e2640');
+  grad.addColorStop(0, '#8fc7e6'); grad.addColorStop(.5, '#d6b9a2'); grad.addColorStop(1, '#a9bde1');
   g.fillStyle = grad; g.fillRect(520, 40, 350, 220);
   for (let i = 0; i < 9000; i++) {
     g.fillStyle = `rgba(255,255,255,${Math.random() * 0.12})`;
@@ -99,18 +89,18 @@ function render() {
   }
 
   // solid logo block — high contrast, no crossings
-  g.fillStyle = '#b9a6f7'; g.fillRect(40, 30, 54, 54);
-  g.fillStyle = '#161420'; g.fillRect(54, 44, 26, 26);
+  g.fillStyle = '#65afe2'; g.fillRect(40, 30, 54, 54);
+  g.fillStyle = '#f7fcff'; g.fillRect(54, 44, 26, 26);
 
   const lines = [
-    ['600 22px ui-monospace, monospace', '#ece8f7', 'MISSION OPS — RESTRICTED', 40, 130],
-    ['15px ui-monospace, monospace', '#ece8f7', 'Holder    : Ananya Verma', 40, 176],
-    ['15px ui-monospace, monospace', '#ece8f7', 'Aadhaar   : 7856 2341 9086', 40, 204],
-    ['15px ui-monospace, monospace', '#ece8f7', 'Pad coords: 13.7199 N, 80.2304 E', 40, 232],
-    ['15px ui-monospace, monospace', '#ece8f7', 'Card      : 5425 2334 3010 9903', 40, 260],
-    ['12px ui-monospace, monospace', '#a79cc4', 'clearance L3 · bay 2 · issued 14/03/2026', 40, 292],
-    ['600 17px ui-monospace, monospace', '#ece8f7', 'Beneficiary: R. Krishnan / HDFC0001742', 40, 340],
-    ['11px ui-monospace, monospace', '#736a8c', 'small print: eight point text is the hard case for tile detectors', 40, 372]
+    ['600 22px ui-monospace, monospace', '#163b57', 'MISSION OPS / RESTRICTED', 40, 130],
+    ['15px ui-monospace, monospace', '#163b57', 'Holder    : Ananya Verma', 40, 176],
+    ['15px ui-monospace, monospace', '#163b57', 'Aadhaar   : 7856 2341 9086', 40, 204],
+    ['15px ui-monospace, monospace', '#163b57', 'Pad coords: 13.7199 N, 80.2304 E', 40, 232],
+    ['15px ui-monospace, monospace', '#163b57', 'Card      : 5425 2334 3010 9903', 40, 260],
+    ['12px ui-monospace, monospace', '#668aa5', 'clearance L3, bay 2, issued 14/03/2026', 40, 292],
+    ['600 17px ui-monospace, monospace', '#163b57', 'Beneficiary: R. Krishnan / HDFC0001742', 40, 340],
+    ['11px ui-monospace, monospace', '#7c9bb0', 'small print: eight point text is the hard case for tile detectors', 40, 372]
   ];
   for (const [font, fill, text, x, y] of lines) { g.font = font; g.fillStyle = fill; g.fillText(text, x, y); }
 
@@ -118,15 +108,15 @@ function render() {
   g.font = '12px ui-monospace, monospace';
   for (let r = 0; r < 6; r++) {
     for (let c = 0; c < 5; c++) {
-      g.fillStyle = r % 2 ? '#a79cc4' : '#d6cdf0';
+      g.fillStyle = r % 2 ? '#668aa5' : '#94bdd8';
       g.fillText(String(100000 + Math.floor(Math.random() * 899999)), 520 + c * 70, 320 + r * 22);
     }
   }
   // a DOM-known field, to exercise Lens A fusion
-  g.strokeStyle = '#3a3450'; g.strokeRect(40, 420, 300, 34);
-  g.fillStyle = '#ece8f7'; g.font = '14px ui-monospace, monospace';
+  g.strokeStyle = '#cfe2f0'; g.strokeRect(40, 420, 300, 34);
+  g.fillStyle = '#163b57'; g.font = '14px ui-monospace, monospace';
   g.fillText('••••••••••••••••', 50, 442);
-  g.fillStyle = '#736a8c'; g.font = '11px ui-monospace, monospace';
+  g.fillStyle = '#7c9bb0'; g.font = '11px ui-monospace, monospace';
   g.fillText('password (reported by Lens A, not by the GPU)', 40, 472);
 }
 
@@ -160,7 +150,13 @@ async function run() {
     });
 
     $('out').src = URL.createObjectURL(result.sanitizedBlob);
-    if (result.heatmapBlob) $('heat').src = URL.createObjectURL(result.heatmapBlob);
+    $('out').hidden = false;
+    $('outEmpty').hidden = true;
+    if (result.heatmapBlob) {
+      $('heat').src = URL.createObjectURL(result.heatmapBlob);
+      $('heat').hidden = false;
+      $('heatEmpty').hidden = true;
+    }
 
     // ---- assertions ----
     const A = [];
@@ -183,8 +179,8 @@ async function run() {
     $('verdict').className = `verdict ${failed.length ? 'bad' : 'ok'}`;
     $('verdict').textContent =
       `${failed.length ? '✗ ' + failed.length + ' assertion(s) failed' : '✓ all ' + A.length + ' assertions passed'}\n` +
-      `backend: ${result.vision.backend}${result.vision.adapter ? ' · ' + (result.vision.adapter.vendor || '') + ' ' + (result.vision.adapter.architecture || '') : ''}` +
-      ` · ${result.vision.cells} tiles · ${result.vision.candidates} candidates · ${result.regions.length} masks\n` +
+      `backend: ${result.vision.backend}${result.vision.adapter ? ', ' + (result.vision.adapter.vendor || '') + ' ' + (result.vision.adapter.architecture || '') : ''}` +
+      `, ${result.vision.cells} tiles, ${result.vision.candidates} candidates, ${result.regions.length} masks\n` +
       A.map(([n, ok]) => `  ${ok ? '✓' : '✗'} ${n}`).join('\n');
 
     const m = result.metrics;
@@ -200,9 +196,9 @@ async function run() {
     const tb = $('tbl').querySelector('tbody');
     tb.innerHTML = result.regions.map((r, i) => {
       const p = result.verification.proofs[i];
-      return `<tr><td style="color:#b9a6f7">${r.token}</td><td>${r.source}</td>` +
+      return `<tr><td style="color:#3f93c9">${r.token}</td><td>${r.source}</td>` +
         `<td>${r.box.x},${r.box.y} ${r.box.w}×${r.box.h}</td><td>${p.pixels}</td>` +
-        `<td style="color:${p.uniform ? '#8fe3c4' : '#f5a3b3'}">${p.uniform ? 'yes · 0 bits' : 'NO'}</td>` +
+        `<td style="color:${p.uniform ? '#248b78' : '#b65d6e'}">${p.uniform ? 'yes, 0 bits' : 'NO'}</td>` +
         `<td>${p.distinctColours}</td></tr>`;
     }).join('');
 
@@ -223,7 +219,7 @@ async function run() {
 
 $('thr').addEventListener('input', () => { $('thrV').textContent = parseFloat($('thr').value).toFixed(2); });
 $('run').addEventListener('click', run);
-$('rerender').addEventListener('click', () => { render(); $('verdict').textContent = 'new frame rendered — run again'; });
+$('rerender').addEventListener('click', () => { render(); $('verdict').textContent = 'New frame rendered. Run again.'; });
 render();
 </script>
 </body>
