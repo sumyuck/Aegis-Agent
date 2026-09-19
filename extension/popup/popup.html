@@ -8,21 +8,24 @@
     <span class="shield">◈</span>
     <div>
       <div class="title">Aegis&#8209;Agent</div>
-      <div class="sub">on&#8209;device visual perception · zero&#8209;trust egress</div>
+      <div class="sub">on&#8209;device perception · zero&#8209;trust egress</div>
     </div>
   </div>
-  <div class="badges">
-    <span id="gpuBadge" class="badge">backend …</span>
-    <span id="srvBadge" class="badge">server …</span>
+  <div class="hdr-right">
+    <div class="badges">
+      <span id="gpuBadge" class="badge">···</span>
+      <span id="srvBadge" class="badge">···</span>
+    </div>
+    <button id="popOut" class="icon-btn" title="Pop out into a resizable window">⤢</button>
   </div>
 </header>
 
 <section class="control">
-  <input id="goal" type="text" placeholder="Agent goal — e.g. “open the Payments tab and start a new transfer”" autocomplete="off">
+  <input id="goal" type="text" placeholder="Agent goal — e.g. “open Payments and start a transfer”" autocomplete="off">
   <div class="row">
-    <button id="dryRun" class="primary">Perceive &amp; Redact <span class="hint">(no network)</span></button>
-    <button id="run">Run agent</button>
-    <button id="stop" class="ghost" disabled>Stop</button>
+    <button id="dryRun" class="primary">✦ Perceive &amp; Redact</button>
+    <button id="run" title="Send goal to the planner and act">▶ Run</button>
+    <button id="stop" class="ghost" disabled title="Stop the running agent">■</button>
   </div>
 </section>
 
@@ -39,13 +42,13 @@
     <div id="verdict" class="verdict idle">No frame processed yet.</div>
 
     <div class="viewToggle">
-      <button class="seg active" data-view="sanitized">What the server sees</button>
-      <button class="seg" data-view="heatmap">GPU textness heatmap</button>
+      <button class="seg active" data-view="sanitized">Sanitized</button>
+      <button class="seg" data-view="heatmap">Heatmap</button>
     </div>
     <div class="stage">
       <img id="shot" alt="sanitized frame">
       <img id="heat" alt="gpu heatmap" hidden>
-      <div id="stageEmpty" class="empty">Open the demo page, then press <b>Perceive &amp; Redact</b>.</div>
+      <div id="stageEmpty" class="empty">Open the demo page, then <b>Perceive &amp; Redact</b>.</div>
     </div>
 
     <div class="metrics" id="metrics"></div>
@@ -79,19 +82,20 @@
 
     <label>Perception mode
       <select id="mode">
-        <option value="dom-only">DOM only — Lens A, no GPU pass</option>
-        <option value="balanced">Balanced — Lens A + Lens B on pixel surfaces</option>
-        <option value="paranoid">Paranoid — mask every text-like region on screen</option>
+        <option value="dom-only">DOM only — no GPU pass</option>
+        <option value="balanced">Balanced — Lens A + Lens B</option>
+        <option value="paranoid">Paranoid — mask every text region</option>
       </select>
     </label>
 
-    <label class="check"><input id="useGpu" type="checkbox"> Use WebGPU compute (off = CPU fallback path)</label>
-    <label class="check"><input id="strictCapture" type="checkbox"> Strict capture via <code>tabCapture</code> — the worker never holds raw pixels</label>
-    <label class="check"><input id="wantTileMap" type="checkbox"> Produce GPU heatmap (debug view)</label>
+    <div class="check-grid">
+      <label class="check" title="Off = CPU fallback path"><input id="useGpu" type="checkbox"> WebGPU compute</label>
+      <label class="check" title="The service worker never holds raw pixels"><input id="strictCapture" type="checkbox"> Strict capture</label>
+      <label class="check" title="Show the per-tile textness scores"><input id="wantTileMap" type="checkbox"> GPU heatmap</label>
+    </div>
 
     <label>Lens&nbsp;B sensitivity <span id="thrVal" class="pill"></span>
-      <input id="threshold" type="range" min="0.5" max="2.2" step="0.05">
-      <span class="note">Lower = mask more aggressively. Raise it if logos or charts get masked.</span>
+      <input id="threshold" type="range" min="0.5" max="2.2" step="0.05" title="Lower = mask more aggressively">
     </label>
 
     <div class="grid2">

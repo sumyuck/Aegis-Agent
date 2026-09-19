@@ -205,6 +205,30 @@ async function persist() {
   $('saveNote').textContent = `saved ${new Date().toLocaleTimeString()}`;
 }
 
+/* -------------------------------------------------------------- pop-out window */
+
+// Chrome's action-popup bubble is fixed-size and cannot be dragged to resize —
+// that's a platform limit, not something CSS or JS can work around. The
+// standard escape hatch is to open the same page in a real OS window via
+// chrome.windows.create, which the user CAN freely resize and reposition. We
+// tag the URL so the popped-out instance knows to fill its window instead of
+// behaving like the fixed action-popup.
+const isExpanded = new URLSearchParams(location.search).has('expanded');
+if (isExpanded) {
+  document.body.classList.add('expanded');
+  $('popOut').hidden = true;
+} else {
+  $('popOut').addEventListener('click', () => {
+    chrome.windows.create({
+      url: chrome.runtime.getURL('popup/popup.html?expanded=1'),
+      type: 'popup',
+      width: 860,
+      height: 720
+    });
+    window.close();
+  });
+}
+
 /* --------------------------------------------------------------------- init */
 
 document.querySelectorAll('.tab').forEach((t) => {
