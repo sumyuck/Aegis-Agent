@@ -45,10 +45,17 @@ const SHORT_TOKEN = {
 };
 
 let detector = null;
+let detectorMode = null;
 
 export async function getDetector(prefer) {
-  if (!detector || (prefer === 'cpu' && detector.backend !== 'cpu')) {
+  // Settings can change while the offscreen document stays alive. Recreate the
+  // detector when the requested execution path changes; otherwise switching CPU
+  // fallback off would silently keep using CPU for every later scan.
+  const wanted = prefer === 'cpu' ? 'cpu' : 'webgpu';
+  if (!detector || detectorMode !== wanted) {
+    try { detector?.dispose?.(); } catch (_) {}
     detector = await createDetector(prefer);
+    detectorMode = wanted;
   }
   return detector;
 }
@@ -189,20 +196,38 @@ async function sha256Hex(buf) {
 
 /* --------------------------------------------------------------- tile map viz */
 
-function tileMapToDataUrl(tileMap, threshold) {
+function tileMapToDataUrl(tileMap, threshold, regions, imageW, imageH) {
   const { scores, tilesX, tilesY } = tileMap;
-  const c = new OffscreenCanvas(tilesX, tilesY);
+  // A tiny, raw tile grid is technically accurate but unreadable in a popup.
+  // Render a bounded, aspect-correct diagnostic image instead. It contains only
+  // detector scores and mask geometry — never a copy of the captured page.
+  const scale = Math.min(1, 960 / imageW, 540 / imageH);
+  const w = Math.max(1, Math.round(imageW * scale));
+  const h = Math.max(1, Math.round(imageH * scale));
+  const c = new OffscreenCanvas(w, h);
   const ctx = c.getContext('2d');
-  const img = ctx.createImageData(tilesX, tilesY);
+  ctx.fillStyle = '#0d1422';
+  ctx.fillRect(0, 0, w, h);
+
+  const tileW = w / tilesX;
+  const tileH = h / tilesY;
   for (let i = 0; i < scores.length; i++) {
-    const v = Math.min(1, scores[i] / 2.5);
+    const v = Math.min(1, scores[i] / Math.max(2.5, threshold * 1.5));
     const hot = scores[i] >= threshold;
-    img.data[i * 4] = hot ? 255 : Math.round(30 + v * 60);
-    img.data[i * 4 + 1] = hot ? Math.round(90 + v * 60) : Math.round(40 + v * 120);
-    img.data[i * 4 + 2] = hot ? 60 : Math.round(60 + v * 160);
-    img.data[i * 4 + 3] = 255;
+    const x = (i % tilesX) * tileW;
+    const y = Math.floor(i / tilesX) * tileH;
+    ctx.fillStyle = hot
+      ? `rgb(${Math.round(176 + v * 70)}, ${Math.round(72 + v * 82)}, ${Math.round(101 - v * 35)})`
+      : `rgb(${Math.round(17 + v * 32)}, ${Math.round(29 + v * 61)}, ${Math.round(48 + v * 99)})`;
+    ctx.fillRect(x, y, Math.ceil(tileW), Math.ceil(tileH));
   }
-  ctx.putImageData(img, 0, 0);
+  ctx.strokeStyle = '#ffd26e';
+  ctx.lineWidth = Math.max(1, Math.round(1.5 * scale));
+  for (const region of regions.filter((r) => r.source === 'gpu-visual')) {
+    const b = region.box;
+    ctx.strokeRect(Math.round(b.x * scale) + 0.5, Math.round(b.y * scale) + 0.5,
+      Math.max(1, Math.round(b.w * scale) - 1), Math.max(1, Math.round(b.h * scale) - 1));
+  }
   return c.convertToBlob({ type: 'image/png' });
 }
 
@@ -286,7 +311,7 @@ export async function sanitize(job) {
 
   let heatmapBlob = null;
   if (opt.wantTileMap && vision.tileMap) {
-    heatmapBlob = await tileMapToDataUrl(vision.tileMap, opt.threshold);
+    heatmapBlob = await tileMapToDataUrl(vision.tileMap, opt.threshold, regions, W, H);
   }
 
   return {

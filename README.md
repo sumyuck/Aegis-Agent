@@ -54,9 +54,9 @@ git clone <this-repo> && cd aegis-agent
    select the `extension/` folder.
 2. Open **https://aegis-agent-yg91.onrender.com/demo/** — a synthetic mission-ops dashboard with
    nine secrets planted on it.
-3. Click the Aegis toolbar icon → **Perceive &amp; Redact**. No network call is made;
+3. Click the Aegis toolbar icon → **Scan &amp; protect**. No network call is made;
    you are looking at exactly the buffer a server would have received.
-4. Type a goal and press **Run agent**:
+4. Type a goal and press **Run mission**:
    `open the Payments tab and then start a new transfer`
 
 **Want to check the perception stack without installing anything?**

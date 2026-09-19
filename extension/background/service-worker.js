@@ -17,7 +17,10 @@ const OFFSCREEN_URL = 'offscreen/offscreen.html';
 const SCAN_TIMEOUT_MS = 400;
 
 const DEFAULTS = {
-  serverUrl: 'http://127.0.0.1:8077',
+  // A judge can install the extension and use the hosted demo without first
+  // running a local FastAPI process. Developers can still override this in the
+  // Settings tab for localhost work.
+  serverUrl: 'https://aegis-agent-yg91.onrender.com',
   useGpu: true,
   mode: 'balanced',        // 'dom-only' | 'balanced' | 'paranoid'
   threshold: 1.05,
@@ -343,6 +346,13 @@ async function runAgent(goal, overrides) {
         captureMode: enclave.captureMode,
         attestation: enclave.attestation,
         firewall,
+        // The console may show a human-auditable request shape, but never frame
+        // bytes. Keeping this for live runs makes the privacy story inspectable
+        // after the agent has acted as well as after a dry run.
+        envelopePreview: {
+          ...envelope,
+          image: `<${enclave.attestation.sanitizedBytes} bytes webp, sha256 ${enclave.attestation.sanitizedSha256.slice(0, 16)}…>`
+        },
         sanitizedDataUrl: enclave.sanitizedDataUrl,
         heatmapDataUrl: enclave.heatmapDataUrl,
         frames: scan.frames,

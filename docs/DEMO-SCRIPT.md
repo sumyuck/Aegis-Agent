@@ -1,7 +1,8 @@
 # Three-minute judge demo
 
-Have running before you start: `./run.sh`, the extension loaded, and
-**http://127.0.0.1:8077/demo/** open with the browser window at a normal size.
+Have running before you start: the extension loaded, and
+**https://aegis-agent-yg91.onrender.com/demo/** open with the browser window at a normal size.
+(For offline practice, use `./run.sh` and `http://127.0.0.1:8077/demo/` instead.)
 Keep the popup's **Settings** tab on *Balanced*, WebGPU on, heatmap on.
 
 ---
@@ -18,7 +19,7 @@ Scroll to the manifest table. Let them read it for five seconds.
 
 ### 0:20 — the failure mode we're fixing (25 s)
 
-Open Settings, switch mode to **DOM only**, press **Perceive & Redact**.
+Open Settings, switch mode to **DOM only**, press **Scan & protect**.
 
 > "This is what a conventional agent does — read the DOM, mask what the DOM admits
 > to. Eleven regions masked. Now look at the canvas box and the scanned annexure."
@@ -31,11 +32,11 @@ still fully legible.
 
 ### 0:45 — the fix (35 s)
 
-Switch mode back to **Balanced**, press **Perceive & Redact** again.
+Switch mode back to **Balanced**, press **Scan & protect** again.
 
 > "Same frame, second lens: a WebGPU compute shader over the pixels themselves."
 
-Click the **GPU textness heatmap** toggle.
+Click the **Lens B map** toggle.
 
 > "One invocation per 8×8 tile. It measures how often luminance flips sign across a
 > scanline — glyph strokes do that constantly, photographs and flat UI don't. That's
@@ -50,7 +51,7 @@ Toggle back to the sanitised view.
 
 ### 1:20 — the proof (30 s)
 
-Point at the green verdict bar, then open the **Masks** tab.
+Point at the green verdict bar, then open the **Audit** tab.
 
 > "Every mask is verified, not asserted. Masking runs in two stages: first every
 > region is overwritten with one solid colour and read *back* off the canvas to
@@ -83,7 +84,7 @@ Type into the goal box:
 open the Payments tab and then start a new transfer
 ```
 
-Press **Run agent**. Watch the trace stream.
+Press **Run mission**. Open **Activity** only if a judge asks for the trace.
 
 > "Two steps, each one a fresh perceive-redact-plan-act cycle. The planner grounded
 > both to element refs. Note what it never had: any redacted value."

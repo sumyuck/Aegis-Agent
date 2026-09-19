@@ -36,9 +36,9 @@ https://<your-app>.onrender.com/v1/health              ← planner status
 https://<your-app>.onrender.com/v1/audit               ← hash-only audit log
 ```
 
-Then, in the extension popup → **Settings** → **Planner endpoint**, replace
-`http://127.0.0.1:8077` with your Render URL. CORS already allows
-`chrome-extension://` origins, so nothing else changes.
+The released extension defaults to the hosted Aegis endpoint. If you deploy your
+own Render instance, set its URL in **Settings** → **Planner endpoint**. CORS already
+allows `chrome-extension://` origins, so nothing else changes.
 
 **Free tier caveat:** the instance sleeps after 15 minutes idle and takes ~30 s to
 wake. Hit `/v1/health` a minute before you present, or upgrade for the demo day.
@@ -83,8 +83,8 @@ server at all, because the self-test imports the enclave modules directly:
 For GitHub Pages: **Settings → Pages → Deploy from a branch → `main` / root.** The
 demo page then lives at `https://<user>.github.io/<repo>/demo/`.
 
-The only thing you lose is **Run agent**, since there is no planner to call.
-**Perceive & Redact** still works completely — it makes no network call by design,
+The only thing you lose is **Run mission**, since there is no planner to call.
+**Scan & protect** still works completely — it makes no network call by design,
 which is the part worth showing anyway.
 
 ## Docker / anywhere else

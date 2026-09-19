@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Aegis-Agent \u2014 On-Device Visual Perception",
-  "version": "0.9.0",
+  "version": "1.0.0",
   "description": "Zero-trust browser agent: WebGPU on-device screen perception, irreversible PII redaction, privacy-preserving remote reasoning.",
   "minimum_chrome_version": "116",
   "permissions": [
