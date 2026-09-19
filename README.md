@@ -37,7 +37,7 @@ measured on the code in it.
 
 <p align="center">
   <sub>
-    The operator console after one capture. The verdict bar is not a status message &mdash;
+    The operator console after one capture. The verdict bar is not a status message.
     it is the result of reading every masked region back off the canvas and asserting
     it is a single colour.
   </sub>
@@ -50,9 +50,8 @@ git clone <this-repo> && cd aegis-agent
 ./run.sh
 ```
 
-1. Open `chrome://extensions` → enable **Developer mode** → **Load unpacked** →
-   select the `extension/` folder.
-2. Open **https://aegis-agent-yg91.onrender.com/demo/** — a synthetic mission-ops dashboard with
+1. Open `chrome://extensions`, enable **Developer mode**, choose **Load unpacked**, and select the `extension/` folder.
+2. Open **https://aegis-agent-yg91.onrender.com/demo/**, a synthetic mission-ops dashboard with
    nine secrets planted on it.
 3. Click the Aegis toolbar icon → **Scan &amp; protect**. No network call is made;
    you are looking at exactly the buffer a server would have received.
@@ -94,9 +93,9 @@ pass/fail assertions.
 
 ### Two lenses, because one is not enough
 
-**Lens A — structural.** A content script in *every* frame finds sensitive regions two
+**Lens A: structural.** A content script in *every* frame finds sensitive regions two
 ways: by field attributes (`type="password"`, `autocomplete="cc-csc"`, `one-time-code`)
-and by scanning rendered text with **checksum-validated** patterns — a real Verhoeff
+and by scanning rendered text with **checksum-validated** patterns, including a real Verhoeff
 check for Aadhaar, Luhn for cards, plus PAN, GSTIN, passport, IFSC, UPI, JWT, API keys
 and geospatial coordinates. Matches are boxed with a DOM `Range`, so the mask hugs the
 matched substring instead of the whole paragraph.
@@ -107,33 +106,33 @@ parent pushes its children an absolute offset **and a clip rectangle** over
 accumulated pair downward. Without the clip, a frame whose content overflows reports
 boxes that stick out past the iframe and mask unrelated parts of the parent page.
 
-**Lens B — visual.** Lens A only sees what the DOM admits to. Text painted with
+**Lens B: visual.** Lens A only sees what the DOM admits to. Text painted with
 `fillText()`, baked into a JPEG, drawn by WebGL, or sitting inside a
 `sandbox`-without-`allow-scripts` iframe is invisible to it. Lens B reads the pixels on
 the GPU:
 
-- **pass 1 — WGSL compute, 8×8 workgroups.** One invocation per 8×8 tile computes
+- **Pass 1: WGSL compute, 8×8 workgroups.** One invocation per 8×8 tile computes
   luminance variance, Sobel energy, gradient anisotropy and **edge-crossing density**.
   Glyph strokes alternate dark and light many times across a scanline; flat UI chrome
   and photographic gradients do not. That last term is what separates text from a photo.
-- **pass 2 — CPU, microseconds.** Threshold, horizontal morphological closing to join
+- **Pass 2: CPU, microseconds.** Threshold, horizontal morphological closing to join
   letters into lines, 8-connected components, then shape filters on aspect ratio and
   fill that reject icons, borders and textures.
 
 A CPU implementation of the same descriptor is the fallback where WebGPU is
 unavailable. Both back ends return the same regions on the same input, ~7× apart in
-time — you can verify that live by flipping one selector in the popup.
+time. You can verify that live by flipping one selector in the popup.
 
 ### Irreversibility as a proof, not a promise
 
 Masking runs in two stages, in this order for a reason:
 
-1. **DESTROY** — every region is overwritten with one solid colour. The canvas is then
+1. **DESTROY:** every region is overwritten with one solid colour. The canvas is then
    read *back* and each region asserted pixel-uniform. A single-colour region carries
    zero bits; no contrast stretch, super-resolution or packet capture recovers the
-   glyphs. The assertion, per region, is the proof — you get pixel counts, deviant-pixel
+   glyphs. The assertion, per region, is the proof. You get pixel counts, deviant-pixel
    counts and distinct-colour counts in the audit record.
-2. **ANNOTATE** — only then is a border and a semantic token (`[MASK_PASSWORD]`,
+2. **ANNOTATE:** only then is a border and a semantic token (`[MASK_PASSWORD]`,
    `[MASK_AADHAAR]`, `[MASK_PII]`) drawn on top, so the remote planner still knows *a
    password field lives at these coordinates* while knowing nothing inside it.
 
@@ -147,7 +146,7 @@ uniformity test meaningless.
 <p align="center">
   <sub>
     Every mask, with the lens that caught it and its own proof. <code>A&middot;field</code>
-    and <code>A&middot;text</code> are the two Lens&nbsp;A paths &mdash; attribute
+    and <code>A&middot;text</code> are the two Lens&nbsp;A paths: attribute
     classification and rendered-text scanning; <code>B&middot;gpu</code> is the
     WebGPU pass finding what the DOM never exposed.
   </sub>
@@ -161,7 +160,7 @@ These are properties of the architecture, not rules the code promises to follow.
 | guarantee | how it is enforced |
 |---|---|
 | The code that sees your screen cannot reach the network | The offscreen enclave runs under `connect-src 'none'`. `fetch`, XHR, WebSocket, EventSource and `sendBeacon` do not exist in that realm. |
-| Nothing unattested reaches the wire | The service worker has exactly one function that touches the network, and it runs an egress firewall first: enclave attestation required, `allRegionsUniform` required, and **every textual field re-scanned for PII independently** — so a bug in perception still cannot leak an identifier through a metadata label. |
+| Nothing unattested reaches the wire | The service worker has exactly one function that touches the network, and it runs an egress firewall first: enclave attestation required, `allRegionsUniform` required, and **every textual field re-scanned for PII independently**. A bug in perception still cannot leak an identifier through a metadata label. |
 | A compromised model cannot touch a credential | The local actuator refuses every write to a severity-3 field. `type` aimed at a password, OTP, CVC or card field returns `BLOCKED_CREDENTIAL_FIELD`; planner-supplied text that itself matches a government or financial identifier returns `BLOCKED_PII_PAYLOAD`. |
 
 With **Strict capture** enabled the worker never holds pixels at all: it passes a
@@ -174,17 +173,17 @@ Intel gen-9 **integrated** GPU, 900×560 frame, warm. Re-run
 
 | stage | WebGPU | CPU fallback |
 |---|---|---|
-| Lens A — full DOM + one nested frame | 6.5 ms | — |
-| Lens B — compute pass | **5.8 ms** | 43 ms |
+| Lens A: full DOM + one nested frame | 6.5 ms | n/a |
+| Lens B: compute pass | **5.8 ms** | 43 ms |
 | component grouping | 0.8 ms | 0.8 ms |
 | mask fill + uniformity proof | 4.1 ms | 4.1 ms |
 | WebP encode | 36.8 ms | 36.8 ms |
 | **total sanitisation** | **62 ms** | 158 ms |
 
-- 238 KB raw PNG → **20 KB on the wire (12.1×)**
+- 238 KB raw PNG becomes **20 KB on the wire (12.1×)**
 - 36 regions masked, every one verified uniform, one distinct colour each
 - **No model weights resident.** GPU allocation is one frame texture plus tile
-  buffers — ≈24 MB at 2880×1800, destroyed after every frame
+  buffers, about 24 MB at 2880×1800, destroyed after every frame
 - Cold first run is ~315 ms (WGSL pipeline creation). Press the button twice before
   you present.
 
@@ -196,11 +195,11 @@ Intel gen-9 **integrated** GPU, 900×560 frame, warm. Re-run
 <p align="center">
   <sub>
     <code>tools/selftest.html</code> on the live deployment. Left: the synthetic frame.
-    Middle: the per-tile textness scores the compute shader produced &mdash; the
+    Middle: the per-tile textness scores the compute shader produced. The
     photographic gradient and the logo stay dark while every line of type lights up.
     Right: what a server would receive.
     <br><br>
-    This is a <b>cold first run</b> &mdash; the 153.9&nbsp;ms GPU figure is almost all
+    This is a <b>cold first run</b>. The 153.9&nbsp;ms GPU figure is almost all
     WGSL pipeline creation and the first GPU submit. Press the button a second time and
     the same frame costs <b>7.1&nbsp;ms</b> on the GPU pass and <b>68.7&nbsp;ms</b> end
     to end, which is the figure quoted in the table above.
@@ -244,7 +243,7 @@ back to **Balanced** and watch the GPU pass close them. That contrast is the pit
 ## Swapping in a real VLM
 
 The heuristic planner is the default because it needs no GPU, no download and no
-network — and because it *proves the claim*: it reaches goals using nothing but the
+network, and because it *proves the claim*: it reaches goals using nothing but the
 action map and the mask tokens, so the redacted values are demonstrably unnecessary.
 
 ```bash
@@ -260,20 +259,20 @@ AEGIS_PLANNER=openai AEGIS_MODEL=Qwen/Qwen2-VL-7B-Instruct AEGIS_BASE=http://127
 
 ```
 extension/
-  manifest.json                 MV3 — all_frames, offscreen, tabCapture
+  manifest.json                 MV3: all_frames, offscreen, tabCapture
   lib/pii-patterns.js           pattern registry + Verhoeff / Luhn validators
-  content/perception.js         LENS A — fields, text ranges, action map, frame clips
+  content/perception.js         LENS A: fields, text ranges, action map, frame clips
   content/actuator.js           synthetic events + credential-write refusal
-  offscreen/offscreen.html      the enclave — connect-src 'none'
-  offscreen/vision-webgpu.js    LENS B — WGSL compute pass + CPU-parity fallback
+  offscreen/offscreen.html      the enclave, connect-src 'none'
+  offscreen/vision-webgpu.js    LENS B: WGSL compute pass + CPU-parity fallback
   offscreen/redactor.js         destroy → prove → annotate → encode → attest
   background/service-worker.js  orchestrator + egress firewall
-  popup/                        operator console — evidence, masks, wire, settings
+  popup/                        operator console: evidence, masks, wire, settings
 server/
-  main.py                       FastAPI — refuses unattested frames, hash-only audit
+  main.py                       FastAPI: refuses unattested frames, hash-only audit
   planner.py                    heuristic grounder (default, zero dependencies)
   vlm.py                        Ollama + OpenAI/vLLM adapters
-demo/index.html                 target page — nine planted secrets, four blind spots
+demo/index.html                 target page: nine planted secrets, four blind spots
 tools/selftest.html             browser harness with assertions, no install needed
 docs/                           demo script, measured numbers, slide corrections
 deploy/                         Render, Vercel and Docker configurations
@@ -295,40 +294,12 @@ deploy/                         Render, Vercel and Docker configurations
 Drop an ONNX Runtime Web implementation satisfying it into `extension/offscreen/` and
 register it in `createDetector`; nothing else in the pipeline changes. Note that the
 current detector locates text *regions* but does not classify *which kind* of PII a
-region holds — everything it finds is masked `[MASK_PII]`. A classifier is what would
+region holds, so everything it finds is masked `[MASK_PII]`. A classifier is what would
 refine that.
-
-## Deploying
-
-`deploy/` has ready configurations for Render, Vercel and Docker. See
-[`docs/DEPLOY.md`](docs/DEPLOY.md). The short version: the demo page and the self-test
-harness are pure static files and work on any static host, while the planner needs a
-Python runtime. Render serves both from one URL and is the recommended target.
-
-## Honest limits
-
-- Lens B finds text *regions*, not text *classes*. Everything it catches is masked
-  `[MASK_PII]`. Recall on 8–10 px type drops; tune the sensitivity slider.
-- `captureVisibleTab` means the service worker briefly holds the raw frame in its own
-  heap. Strict capture mode removes that; the default path does not.
-- JavaScript cannot zero a string. *"Never serialised off-device, and provably uniform
-  where masked"* is the defensible claim — not *"erased from RAM"*.
-- The planner endpoint is plain HTTP on loopback in development. Real deployment needs
-  TLS and request signing.
-- Chrome / Chromium 116+ only. Firefox ships neither MV3 offscreen documents nor
-  WebGPU enabled by default, so Firefox needs a separate capture path.
-
-## Documentation
-
-| | |
-|---|---|
-| [`docs/DEMO-SCRIPT.md`](docs/DEMO-SCRIPT.md) | Timed three-minute walkthrough, plus what to do when something breaks on stage |
-| [`docs/MEASUREMENTS.md`](docs/MEASUREMENTS.md) | Every measured number, and corrected slide text where the build differs from the deck |
-| [`docs/DEPLOY.md`](docs/DEPLOY.md) | Render, Vercel, Docker |
 
 ## License
 
-MIT — see [`LICENSE`](LICENSE).
+MIT. See [`LICENSE`](LICENSE).
 
 Every identifier in `demo/` is fabricated. The Aadhaar numbers are checksum-valid so
 the Verhoeff validator has something real to accept; they belong to no one.
